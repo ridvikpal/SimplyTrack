@@ -1,10 +1,15 @@
-''' FUNCTION DEFINITIONS '''
+''' MODULES '''
+import csv
 
+''' FUNCTION DEFINITIONS '''
+def getIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
+    matchColumns = [x for x in listToSearch if searchKey in x]
+    return listToSearch.index(matchColumns[0])
 
 ''' CLASS DEFINITIONS'''
 # define a bank entry class
 class bankEntry:
-    __slots__ = {"accountType", "accountNumber", "transactionDate", "amount", "description"}
+    __slots__ = ['accountType', 'accountNumber', 'transactionDate', 'amount', 'description']
 
     # create the class constructor
     def __init__(self, accountType, accountNumber, transactionDate, amount, description) -> None:
@@ -16,10 +21,33 @@ class bankEntry:
 
     # create the string conversion return type (for printing object data)
     def __str__(self) -> str:
-        return f"{self.accountType} | {self.accountNumber} | {self.transactionDate} | {self.amount} | {self.description}"
+        return f'{self.accountType} | {self.accountNumber} | {self.transactionDate} | {self.amount} | {self.description}'
 
 
 ''' MAIN PROGRAM STARTS HERE '''
-test = bankEntry("Chequing", 1, "May 24, 2023", 340, "Initial deposit in bank")
 
-print(test)
+# create a list that holds the bank transaction data
+allTransactions = []
+
+# test = bankEntry('Chequing', 1, 'May 24, 2023', 340, 'Initial deposit in bank')
+
+# get the bank entries from the csv file
+# first open the csv file
+inputFile = csv.reader(open(r'C:\Users\ridvikpal\Downloads\csv94961.csv', 'r'))
+
+# get the first row which contains the headers of the csv file
+firstRow = next(inputFile)
+
+# get the account type row
+typeIndex = getIndexOfMatchingRow(firstRow, "Type")
+numberIndex = getIndexOfMatchingRow(firstRow, "Number")
+dateIndex = getIndexOfMatchingRow(firstRow, "Date")
+amountIndex = getIndexOfMatchingRow(firstRow, "$")
+descriptionIndex = getIndexOfMatchingRow(firstRow, "Description")
+
+# get the account number row
+print('Account Type: ', typeIndex)
+print('Account Number: ', numberIndex)
+print('Transaction Date: ', dateIndex)
+print('Amount: ', amountIndex)
+print('Description: ', descriptionIndex)
