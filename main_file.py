@@ -2,9 +2,13 @@
 import csv
 
 ''' FUNCTION DEFINITIONS '''
-def getIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
-    matchColumns = [x for x in listToSearch if searchKey in x]
-    return listToSearch.index(matchColumns[0])
+# returns a list of indexes of all matching elements in a list based on partial names string search
+def getIndexOfMatchingRow(listToSearch: str, searchKey: str) -> list:
+    matchColumns = [x for x in listToSearch if any([searchKey in x, searchKey.lower() in x, searchKey.upper() in x])]
+    matchColumnsIndex = []
+    for x in matchColumns:
+        matchColumnsIndex.append(listToSearch.index(x))
+    return matchColumnsIndex
 
 ''' CLASS DEFINITIONS'''
 # define a bank entry class
@@ -38,12 +42,20 @@ inputFile = csv.reader(open(r'C:\Users\ridvikpal\Downloads\csv94961.csv', 'r'))
 # get the first row which contains the headers of the csv file
 firstRow = next(inputFile)
 
-# get the account type row
-typeIndex = getIndexOfMatchingRow(firstRow, "Type")
-numberIndex = getIndexOfMatchingRow(firstRow, "Number")
-dateIndex = getIndexOfMatchingRow(firstRow, "Date")
-amountIndex = getIndexOfMatchingRow(firstRow, "$")
-descriptionIndex = getIndexOfMatchingRow(firstRow, "Description")
+# get the indexes of each type of column to catagorize them
+typeIndex = []
+numberIndex = []
+dateIndex = []
+amountIndex = []
+descriptionIndex = []
+typeIndex.extend(getIndexOfMatchingRow(firstRow, "Account Type"))
+numberIndex.extend(getIndexOfMatchingRow(firstRow, "Account Number"))
+dateIndex.extend(getIndexOfMatchingRow(firstRow, "Date"))
+amountIndex.extend(getIndexOfMatchingRow(firstRow, "$"))
+amountIndex.extend(getIndexOfMatchingRow(firstRow, "£"))
+amountIndex.extend(getIndexOfMatchingRow(firstRow, "€"))
+amountIndex.extend(getIndexOfMatchingRow(firstRow, "₹"))
+descriptionIndex.extend(getIndexOfMatchingRow(firstRow, "Description"))
 
 # get the account number row
 print('Account Type: ', typeIndex)
