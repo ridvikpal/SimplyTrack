@@ -1,14 +1,22 @@
 ''' MODULES '''
 import csv
+import dateutil.parser
 
 ''' FUNCTION DEFINITIONS '''
 # returns a list of indexes of all matching elements in a list based on partial names string search
-def getIndexOfMatchingRow(listToSearch: str, searchKey: str) -> list:
+def getAllIndexesOfMatchingRow(listToSearch: str, searchKey: str) -> list:
     matchColumns = [x for x in listToSearch if any([searchKey in x, searchKey.lower() in x, searchKey.upper() in x])]
     matchColumnsIndex = list()
     for x in matchColumns:
         matchColumnsIndex.append(listToSearch.index(x))
     return matchColumnsIndex
+
+# returns the first index from left to right of matching elements in a list based on partial names string search
+def getSingleIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
+    matchColumns = [x for x in listToSearch if searchKey in x]
+    if len(matchColumns) > 0:
+        return listToSearch.index(matchColumns[0])
+    return -1
 
 ''' CLASS DEFINITIONS'''
 # define a bank entry class
@@ -29,66 +37,45 @@ class bankEntry:
 
 
 ''' MAIN PROGRAM STARTS HERE '''
-
 # create a list that holds the bank transaction data
 allTransactions = list()
 
-# test = bankEntry('Chequing', 1, 'May 24, 2023', 340, 'Initial deposit in bank')
-
-# get the bank entries from the csv file
-# first open the csv file
-inputFile = csv.reader(open(r'C:\Users\ridvikpal\Downloads\csv94961.csv', 'r'))
+# open the bank entries csv file
+inputFile = csv.reader(open(r"C:\Users\ridvikpal\Downloads\csv7567.csv", 'r'))
 
 # get the first row which contains the headers of the csv file
 firstRow = next(inputFile)
 
 # get the indexes of each type of column to catagorize them
-typeIndex = list()
-numberIndex = list()
-dateIndex = list()
-amountIndex = list()
-descriptionIndex = list()
-typeIndex.extend(getIndexOfMatchingRow(firstRow, "Account Type"))
-numberIndex.extend(getIndexOfMatchingRow(firstRow, "Account Number"))
-dateIndex.extend(getIndexOfMatchingRow(firstRow, "Date"))
-amountIndex.extend(getIndexOfMatchingRow(firstRow, "$"))
-amountIndex.extend(getIndexOfMatchingRow(firstRow, "£"))
-amountIndex.extend(getIndexOfMatchingRow(firstRow, "€"))
-amountIndex.extend(getIndexOfMatchingRow(firstRow, "₹"))
-descriptionIndex.extend(getIndexOfMatchingRow(firstRow, "Description"))
+typeIndex = getSingleIndexOfMatchingRow(firstRow, "Account Type")
+numberIndex = getSingleIndexOfMatchingRow(firstRow, "Account Number")
+dateIndex = getSingleIndexOfMatchingRow(firstRow, "Date")
+# get the money based on the type of currency
+amountIndex = getSingleIndexOfMatchingRow(firstRow, "$")
+if amountIndex < 0:
+    amountIndex = getSingleIndexOfMatchingRow(firstRow, "£")
+if amountIndex < 0:
+    amountIndex = getSingleIndexOfMatchingRow(firstRow, "€")
+if amountIndex < 0:
+    amountIndex = getSingleIndexOfMatchingRow(firstRow, "₹")
+descriptionIndexes = getAllIndexesOfMatchingRow(firstRow, "Description")
 
-
-# # get the account number row
-# print('Account Type: ', typeIndex)
-# print('Account Number: ', numberIndex)
-# print('Transaction Date: ', dateIndex)
-# print('Amount: ', amountIndex)
-# print('Description: ', descriptionIndex)
-
+# actually process the data in the csv file, and put it into an array of bank entry objects
 for row in inputFile:
-    accountTypeTemp = list()
-    accountNumberTemp = list()
-    transactionDateTemp = list()
-    amountTemp = list()
-    descriptionTemp = list()
-    for x in typeIndex:
+    descriptionTempList = list()
+    accountTypeTemp = row[typeIndex]
+    accountNumberTemp = row[numberIndex]
+    accountNumberTemp = accountNumberTemp.replace("-", "")
+    transactionDateTemp = dateutil.parser.parse(row[dateIndex], ignoretz=True)
+    transactionDateTemp = transactionDateTemp.date()
+    amountTemp = row[amountIndex]
+    for x in descriptionIndexes:
         if len(row[x]) > 0:
-            accountTypeTemp.append(row[x])
-    for x in numberIndex:
-        if len(row[x]) > 0:
-            accountNumberTemp.append(row[x])
-    for x in dateIndex:
-        if len(row[x]) > 0:
-            transactionDateTemp.append(row[x])
-    for x in amountIndex:
-        if len(row[x]) > 0:
-            amountTemp.append(row[x])
-    for x in descriptionIndex:
-        if len(row[x]) > 0:
-            descriptionTemp.append(row[x])
+            descriptionTempList.append(row[x])
+    descriptionTemp = " ".join(descriptionTempList)
     allTransactions.append(bankEntry(accountTypeTemp, accountNumberTemp, transactionDateTemp, amountTemp, descriptionTemp))
 
-
+# print the bank entry objects for correctness
 print("Account Type | Account Number | Transaction Date | Amount | Description")
 for x in allTransactions:
     print(x)
