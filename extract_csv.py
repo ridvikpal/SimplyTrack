@@ -1,5 +1,6 @@
 ''' MODULE IMPORTS '''
 import csv
+from pathlib import Path
 import dateutil.parser
 
 ''' CLASS DEFINITIONS'''
@@ -35,47 +36,40 @@ def getSingleIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
         return listToSearch.index(matchColumns[0])
     return -1
 
-''' MAIN PROGRAM STARTS HERE '''
-# create a list that holds the bank transaction data
-allTransactions = list()
+def extractDataFromCSVFile(filePath: Path) -> list():
+    inputFile = csv.reader(open(filePath, 'r'))
+    firstRow = next(inputFile)
 
-# open the bank entries csv file
-inputFile = csv.reader(open(r"C:\Users\ridvikpal\Downloads\csv7567.csv", 'r'))
+    # get the indexes of each type of column to catagorize them
+    typeIndex = getSingleIndexOfMatchingRow(firstRow, "Account Type")
+    numberIndex = getSingleIndexOfMatchingRow(firstRow, "Account Number")
+    dateIndex = getSingleIndexOfMatchingRow(firstRow, "Date")
+    # get the money based on the type of currency
+    amountIndex = getSingleIndexOfMatchingRow(firstRow, "$")
+    if amountIndex < 0:
+        amountIndex = getSingleIndexOfMatchingRow(firstRow, "£")
+    if amountIndex < 0:
+        amountIndex = getSingleIndexOfMatchingRow(firstRow, "€")
+    if amountIndex < 0:
+        amountIndex = getSingleIndexOfMatchingRow(firstRow, "₹")
+    descriptionIndexes = getAllIndexesOfMatchingRow(firstRow, "Description")
 
-# get the first row which contains the headers of the csv file
-firstRow = next(inputFile)
+    # create a list that holds the bank transaction data
+    allTransactions = list()
 
-# get the indexes of each type of column to catagorize them
-typeIndex = getSingleIndexOfMatchingRow(firstRow, "Account Type")
-numberIndex = getSingleIndexOfMatchingRow(firstRow, "Account Number")
-dateIndex = getSingleIndexOfMatchingRow(firstRow, "Date")
-# get the money based on the type of currency
-amountIndex = getSingleIndexOfMatchingRow(firstRow, "$")
-if amountIndex < 0:
-    amountIndex = getSingleIndexOfMatchingRow(firstRow, "£")
-if amountIndex < 0:
-    amountIndex = getSingleIndexOfMatchingRow(firstRow, "€")
-if amountIndex < 0:
-    amountIndex = getSingleIndexOfMatchingRow(firstRow, "₹")
-descriptionIndexes = getAllIndexesOfMatchingRow(firstRow, "Description")
-
-# actually process the data in the csv file, and put it into an array of bank entry objects
-for row in inputFile:
-    descriptionTempList = list()
-    accountTypeTemp = row[typeIndex]
-    accountNumberTemp = row[numberIndex]
-    accountNumberTemp = accountNumberTemp.replace("-", "")
-    transactionDateTemp = dateutil.parser.parse(row[dateIndex], ignoretz=True)
-    transactionDateTemp = transactionDateTemp.date()
-    amountTemp = row[amountIndex]
-    for x in descriptionIndexes:
-        if len(row[x]) > 0:
-            descriptionTempList.append(row[x])
-    descriptionTemp = " ".join(descriptionTempList)
-    descriptionTemp.strip()
-    allTransactions.append(bankEntry(accountTypeTemp, accountNumberTemp, transactionDateTemp, amountTemp, descriptionTemp))
-
-# print the bank entry objects for correctness
-# print("Account Type | Account Number | Transaction Date | Amount | Description")
-# for x in allTransactions:
-#     print(x)
+    # actually process the data in the csv file, and put it into an array of bank entry objects
+    for row in inputFile:
+        descriptionTempList = list()
+        accountTypeTemp = row[typeIndex]
+        accountNumberTemp = row[numberIndex]
+        accountNumberTemp = accountNumberTemp.replace("-", "")
+        transactionDateTemp = dateutil.parser.parse(row[dateIndex], ignoretz=True)
+        transactionDateTemp = transactionDateTemp.date()
+        amountTemp = row[amountIndex]
+        for x in descriptionIndexes:
+            if len(row[x]) > 0:
+                descriptionTempList.append(row[x])
+        descriptionTemp = " ".join(descriptionTempList)
+        descriptionTemp.strip()
+        allTransactions.append(bankEntry(accountTypeTemp, accountNumberTemp, transactionDateTemp, amountTemp, descriptionTemp))
+    return allTransactions
