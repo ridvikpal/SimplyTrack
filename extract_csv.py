@@ -1,22 +1,6 @@
-''' MODULES '''
+''' MODULE IMPORTS '''
 import csv
 import dateutil.parser
-
-''' FUNCTION DEFINITIONS '''
-# returns a list of indexes of all matching elements in a list based on partial names string search
-def getAllIndexesOfMatchingRow(listToSearch: str, searchKey: str) -> list:
-    matchColumns = [x for x in listToSearch if any([searchKey in x, searchKey.lower() in x, searchKey.upper() in x])]
-    matchColumnsIndex = list()
-    for x in matchColumns:
-        matchColumnsIndex.append(listToSearch.index(x))
-    return matchColumnsIndex
-
-# returns the first index from left to right of matching elements in a list based on partial names string search
-def getSingleIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
-    matchColumns = [x for x in listToSearch if searchKey in x]
-    if len(matchColumns) > 0:
-        return listToSearch.index(matchColumns[0])
-    return -1
 
 ''' CLASS DEFINITIONS'''
 # define a bank entry class
@@ -35,6 +19,21 @@ class bankEntry:
     def __str__(self) -> str:
         return f'{self.accountType} | {self.accountNumber} | {self.transactionDate} | {self.amount} | {self.description}'
 
+''' FUNCTION DEFINITIONS '''
+# returns a list of indexes of all matching elements in a list based on partial names string search
+def getAllIndexesOfMatchingRow(listToSearch: str, searchKey: str) -> list:
+    matchColumns = [x for x in listToSearch if any([searchKey in x, searchKey.lower() in x, searchKey.upper() in x])]
+    matchColumnsIndex = list()
+    for x in matchColumns:
+        matchColumnsIndex.append(listToSearch.index(x))
+    return matchColumnsIndex
+
+# returns the first index from left to right of matching elements in a list based on partial names string search
+def getSingleIndexOfMatchingRow(listToSearch: str, searchKey: str) -> int:
+    matchColumns = [x for x in listToSearch if searchKey in x]
+    if len(matchColumns) > 0:
+        return listToSearch.index(matchColumns[0])
+    return -1
 
 ''' MAIN PROGRAM STARTS HERE '''
 # create a list that holds the bank transaction data
@@ -73,9 +72,10 @@ for row in inputFile:
         if len(row[x]) > 0:
             descriptionTempList.append(row[x])
     descriptionTemp = " ".join(descriptionTempList)
+    descriptionTemp.strip()
     allTransactions.append(bankEntry(accountTypeTemp, accountNumberTemp, transactionDateTemp, amountTemp, descriptionTemp))
 
 # print the bank entry objects for correctness
-print("Account Type | Account Number | Transaction Date | Amount | Description")
-for x in allTransactions:
-    print(x)
+# print("Account Type | Account Number | Transaction Date | Amount | Description")
+# for x in allTransactions:
+#     print(x)
