@@ -3,30 +3,25 @@ import mysql_management
 import extract_csv
 from pathlib import Path
 
-# set the colour theme
-# pg.theme('Dark Grey 13')
-
-# everything in our window
-
-def updateTable():
+# update the table data
+def updateTableData():
     data = mysql_management.getDataFromSQL()
-    listData = []
+    displayData.clear()
     for x in data:
         y = []
         y.extend([x[0], x[1], x[2], x[3], x[4]])
-        listData.append(y)
-    return listData
+        displayData.append(y)
 
-# make the data to display a single string
-# displayData = '\n'.join([str(i) for i in displayData])
+# this is the data that will be displayed on screen
+displayData = list()
 
-# update the table for the first time upon program startup
-displayData = updateTable()
+# update the table data for the first time upon program startup
+updateTableData()
 
+# headers for table
 toprow = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
-# print(toprow)
-# print(data)
 
+# create the table gui element
 mainTable = pg.Table(
                 values=displayData, headings=toprow,
                 auto_size_columns=True,
@@ -41,14 +36,16 @@ mainTable = pg.Table(
                 enable_click_events=True
             )
 
+# create the gui layout
 layout = [
    [mainTable],
    [pg.Button('Import CSV File', key="-CSV-")]
 ]
 
+# create the window
 window = pg.Window("SimplyTrack", layout, resizable=True)
-csv_file_path = ""
 
+# main event loop
 while True:
     event, values = window.read() # read both events and values inputted into elements
     # for debugging purposes, print the event and the values
@@ -62,17 +59,25 @@ while True:
         pass
     # if csv import button has been clicked do something
     if '-CSV-' in event:
+        # try to extract data from the csv file
         try:
-            # get the csv file path
+            # get the raw csv file path
             raw_path = pg.popup_get_file("Please choose a CSV File", title="Choose CSV File", file_types=(('CSV Files', '*.csv'),))
+            # check to make sure there is some raw path
             if raw_path != None:
+                # check to make sure the path is not empty
                 if len(raw_path) > 0:
+                    # get a universal path, irrespective of os platform
                     csv_file_path = Path(raw_path)
-                    # upload the csv file to the SQL database
+                    # extract csv data into bank entry objects
                     transactions = extract_csv.extractDataFromCSVFile(csv_file_path)
+                    # update those bank entry objects into sql database
                     mysql_management.insertDataIntoSQL(transactions)
-                    displayData = updateTable()
+                    # update the table data
+                    updateTableData()
+                    # refresh the gui table with new data
                     window["-TABLE-"].update(values=displayData)
+        # if there was some error, let the user know
         except:
             pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file", title="An Error Occured")
 
