@@ -1,5 +1,5 @@
 ''' MODULE IMPORTS '''
-import main_file
+import extract_csv
 import mysql.connector
 
 ''' FUNCTION DEFINITIONS '''
@@ -17,7 +17,7 @@ def insertDataIntoSQL(transactionList: list) -> None:
     db.commit()
 
 # retrieves data from sql database
-def getDataFromSQL(lastYear: bool = False) -> list():
+def getDataFromSQL(lastYear: bool = True) -> list():
     if lastYear == False:
         cursor.execute("select * from main")
     else:
@@ -38,13 +38,11 @@ db = mysql.connector.connect(
 
 cursor = db.cursor()
 
-# insertDataIntoSQL(main_file.allTransactions)
+# insertDataIntoSQL(extract_csv.allTransactions)
 
-test = getDataFromSQL()
+# test = getDataFromSQL()
 
 # cursor.execute("select * from main")
 
 # for x in cursor:
 #     print(x)
-
-print(test[2])
