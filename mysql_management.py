@@ -6,14 +6,7 @@ import mysql.connector
 # inserts given bank entries into the SQL database
 def insertDataIntoSQL(transactionList: list) -> None:
     for x in transactionList:
-        a = x.accountType
-        b = x.accountNumber
-        c = x.transactionDate
-        d = x.amount
-        e = x.description
-        # print(f"insert into main values("{x.accountType}", {x.transactionDate})")
-        cursor.execute(f"insert into main values(\"{a}\", {b}, \"{c}\", {d}, \"{e}\")")
-           # print(f"insert into main values(\"{a}\", {b}, {c}, {d}, \"{e}\")")
+        cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
     db.commit()
 
 # retrieves data from sql database
@@ -28,7 +21,7 @@ def getDataFromSQL(lastYear: bool = True) -> list():
         sqlData.append(x)
     return sqlData
 
-''' MAIN PROGRAM STARTS HERE '''
+''' CONNECT TO SQL DATABASE '''
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -36,13 +29,5 @@ db = mysql.connector.connect(
     database="bank_transactions"
 )
 
+# create our cursor to perform operations
 cursor = db.cursor()
-
-# insertDataIntoSQL(extract_csv.allTransactions)
-
-# test = getDataFromSQL()
-
-# cursor.execute("select * from main")
-
-# for x in cursor:
-#     print(x)

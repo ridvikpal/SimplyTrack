@@ -2,23 +2,7 @@
 import csv
 from pathlib import Path
 import dateutil.parser
-
-''' CLASS DEFINITIONS'''
-# define a bank entry class
-class bankEntry:
-    __slots__ = ['accountType', 'accountNumber', 'transactionDate', 'amount', 'description']
-
-    # create the class constructor
-    def __init__(self, accountType, accountNumber, transactionDate, amount, description) -> None:
-        self.accountType = accountType
-        self.accountNumber = accountNumber
-        self.transactionDate = transactionDate
-        self.amount = amount
-        self.description = description
-
-    # create the string conversion return type (for printing object data)
-    def __str__(self) -> str:
-        return f'{self.accountType} | {self.accountNumber} | {self.transactionDate} | {self.amount} | {self.description}'
+from decimal import Decimal
 
 ''' FUNCTION DEFINITIONS '''
 # returns a list of indexes of all matching elements in a list based on partial names string search
@@ -44,6 +28,7 @@ def extractDataFromCSVFile(filePath: Path) -> list():
     typeIndex = getSingleIndexOfMatchingRow(firstRow, "Account Type")
     numberIndex = getSingleIndexOfMatchingRow(firstRow, "Account Number")
     dateIndex = getSingleIndexOfMatchingRow(firstRow, "Date")
+
     # get the money based on the type of currency
     amountIndex = getSingleIndexOfMatchingRow(firstRow, "$")
     if amountIndex < 0:
@@ -52,24 +37,29 @@ def extractDataFromCSVFile(filePath: Path) -> list():
         amountIndex = getSingleIndexOfMatchingRow(firstRow, "€")
     if amountIndex < 0:
         amountIndex = getSingleIndexOfMatchingRow(firstRow, "₹")
+
+    # description may have multiple indexes, so get all of them
     descriptionIndexes = getAllIndexesOfMatchingRow(firstRow, "Description")
 
     # create a list that holds the bank transaction data
-    allTransactions = list()
+    allTransactionsList = list()
 
-    # actually process the data in the csv file, and put it into an array of bank entry objects
+    # actually process the data in the csv file, and put it into an 2d array
     for row in inputFile:
-        descriptionTempList = list()
-        accountTypeTemp = row[typeIndex]
-        accountNumberTemp = row[numberIndex]
-        accountNumberTemp = accountNumberTemp.replace("-", "")
-        transactionDateTemp = dateutil.parser.parse(row[dateIndex], ignoretz=True)
-        transactionDateTemp = transactionDateTemp.date()
-        amountTemp = row[amountIndex]
+        # transaction = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
+        transaction = list()
+        transaction.append(row[typeIndex])
+        transaction.append(row[numberIndex])
+        transaction[-1] = transaction[-1].replace("-", "")
+        transaction.append((dateutil.parser.parse(row[dateIndex], ignoretz=True)).date())
+        transaction.append(Decimal(row[amountIndex]))
+
+        # combine all description strings into one sigle string
+        transaction.append("")
         for x in descriptionIndexes:
             if len(row[x]) > 0:
-                descriptionTempList.append(row[x])
-        descriptionTemp = " ".join(descriptionTempList)
-        descriptionTemp.strip()
-        allTransactions.append(bankEntry(accountTypeTemp, accountNumberTemp, transactionDateTemp, amountTemp, descriptionTemp))
-    return allTransactions
+                transaction[-1] += row[x]
+                transaction[-1] += " "
+        transaction[-1] = transaction[-1].strip()
+        allTransactionsList.append(transaction)
+    return allTransactionsList

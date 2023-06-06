@@ -70,9 +70,9 @@ while True:
                     # get a universal path, irrespective of os platform
                     csv_file_path = Path(raw_path)
                     # extract csv data into bank entry objects
-                    transactions = extract_csv.extractDataFromCSVFile(csv_file_path)
+                    transactionsList = extract_csv.extractDataFromCSVFile(csv_file_path)
                     # update those bank entry objects into sql database
-                    mysql_management.insertDataIntoSQL(transactions)
+                    mysql_management.insertDataIntoSQL(transactionsList)
                     # update the table data
                     updateTableData()
                     # refresh the gui table with new data
