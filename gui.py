@@ -4,7 +4,7 @@ import extract_csv
 from pathlib import Path
 
 # update the table data
-def updateTableData():
+def updateTableData() -> None:
     data = mysql_management.getDataFromSQL()
     displayData.clear()
     for x in data:
@@ -72,7 +72,7 @@ while True:
                     # extract csv data into bank entry objects
                     transactionsList = extract_csv.extractDataFromCSVFile(csv_file_path)
                     # update those bank entry objects into sql database
-                    mysql_management.insertDataIntoSQL(transactionsList)
+                    mysql_management.insertBulkDataIntoSQL(transactionsList)
                     # update the table data
                     updateTableData()
                     # refresh the gui table with new data

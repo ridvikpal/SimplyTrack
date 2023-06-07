@@ -1,13 +1,19 @@
 ''' MODULE IMPORTS '''
 import extract_csv
 import mysql.connector
+from decimal import Decimal
+import datetime
 
 ''' FUNCTION DEFINITIONS '''
-# inserts given bank entries into the SQL database
-def insertDataIntoSQL(transactionList: list) -> None:
+# inserts multiple bank entries (transactions) into the SQL database
+def insertBulkDataIntoSQL(transactionList: list) -> None:
     for x in transactionList:
         cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
     db.commit()
+
+# inserts one single bank entry (transaction) into the SQL database
+def insertDataIntoSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str) -> None:
+    pass
 
 # retrieves data from sql database
 def getDataFromSQL(lastYear: bool = True) -> list():
@@ -22,6 +28,7 @@ def getDataFromSQL(lastYear: bool = True) -> list():
     return sqlData
 
 ''' CONNECT TO SQL DATABASE '''
+# credentials for sql server (later ask for from user)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
