@@ -1,3 +1,10 @@
+'''
+This file is used to generate the CSV file from the export from the bank website
+such as RBC banking for example
+
+'''
+
+
 ''' MODULE IMPORTS '''
 import csv
 from pathlib import Path

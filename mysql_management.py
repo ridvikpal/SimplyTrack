@@ -13,10 +13,11 @@ def insertBulkDataIntoSQL(transactionList: list) -> None:
 
 # inserts one single bank entry (transaction) into the SQL database
 def insertDataIntoSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str) -> None:
-    pass
+    cursor.execute(f"insert into main values(\"{acc_type}\", {acc_number}, \"{trans_date}\", {amount}, \"{description}\")")
+    db.commit()
 
 # retrieves data from sql database
-def getDataFromSQL(lastYear: bool = True) -> list():
+def getDataFromSQL(lastYear: bool = False) -> list():
     if lastYear == False:
         cursor.execute("select * from main")
     else:
