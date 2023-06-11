@@ -28,6 +28,11 @@ def getDataFromSQL(lastYear: bool = False) -> list():
         sqlData.append(x)
     return sqlData
 
+# deletes an entry from the sql database
+def deleteDataInSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str) -> None:
+    cursor.execute(f"delete from main where account_type = \"{acc_type}\" and account_number =  \"{acc_number}\" and transaction_date = \"{trans_date}\" and amount = \"{amount}\" and description = \"{description}\"")
+    db.commit()
+
 ''' CONNECT TO SQL DATABASE '''
 # credentials for sql server (later ask for from user)
 db = mysql.connector.connect(

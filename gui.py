@@ -23,6 +23,9 @@ displayData = list()
 # update the table data for the first time upon program startup
 updateTableData()
 
+# this is the selected data row
+selectData = list()
+
 # headers for table
 toprow = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
 
@@ -33,7 +36,7 @@ mainTable = pg.Table(
                 display_row_numbers=True,
                 justification='center',
                 key='-TABLE-',
-                selected_row_colors='blue on black',
+                selected_row_colors='white on dark blue',
                 alternating_row_color="grey",
                 enable_events=True,
                 expand_x=True,
@@ -50,12 +53,15 @@ manualEntry = [
     [pg.Button('Add Manual Entry', key='-MAN_ENTRY-')]
 ]
 
+deleteEntry = [pg.Button("Delete Entry", key='-DELETE-')]
+
 csvImport = [pg.Button('Import CSV File', key="-CSV-")]
 
 # create the gui layout
 layout = [
    [mainTable],
-   [manualEntry, csvImport]
+   [manualEntry, csvImport],
+   [deleteEntry]
 ]
 
 # create the window
@@ -65,13 +71,15 @@ window = pg.Window("SimplyTrack", layout, resizable=True)
 while True:
     event, values = window.read() # read both events and values inputted into elements
     # for debugging purposes, print the event and the values
-    print("event:", event, "values:", values)
+    # print("event:", event, "values:", values)
     # if the window is closed, break the main loop
     if event == pg.WIN_CLOSED:
         break
     # if a table element has been clicked do something
     if '+CLICKED+' in event and '-TABLE-' in event:
-    #   pg.popup("You clicked row:{} Column: {}".format(event[2][0], event[2][1]))
+        # pg.popup("You clicked row:{} Column: {}".format(event[2][0], event[2][1]))
+        # print(displayData[event[2][0]][0], displayData[event[2][0]][1], displayData[event[2][0]][2], displayData[event[2][0]][3], displayData[event[2][0]][4])
+        selectData = displayData[event[2][0]]
         pass
     # if csv import button has been clicked do something
     if '-CSV-' in event:
@@ -94,19 +102,24 @@ while True:
         except:
             pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file", title="An Error Occured")
 
-    # if the calendar button is pressed
-    # if '-TRANS_DATE_SELECT-' in event:
-    #     values['-TRANS_DATE-'] = values['-TRANS_DATE_SELECT']
-    #     window["-TABLE-"].update()
+    # if a deletion was requested
+    if '-DELETE-' in event:
+        try:
+            accType, accNum, transDate, amount, description = selectData
+            mysql_management.deleteDataInSQL(accType, accNum, transDate, amount, description)
+            updateTableGUI()
+        except:
+            pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
 
-    # if a manual entry is entered
-    if 'MAN_ENTRY' in event:
+    # if a manual entry is entered into the system
+    if '-MAN_ENTRY-' in event:
         try:
             # first make sure all entries are filled
             accType, accNum, transDate, amount, description = values['-ACC_TYPE-'], values['-ACC_NUM-'], values['-TRANS_DATE-'], values['-AMOUNT-'], values['-DESCRIPT-']
             if values['-ACC_TYPE-'] and values['-ACC_NUM-'] and values['-TRANS_DATE-'] and values['-AMOUNT-'] and values['-DESCRIPT-']:
                 mysql_management.insertDataIntoSQL(accType,accNum, transDate, amount, description)
                 updateTableGUI()
+                # clear input fields
                 window['-ACC_TYPE-']('')
                 window['-ACC_NUM-']('')
                 window['-TRANS_DATE-']('')
