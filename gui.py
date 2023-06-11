@@ -17,6 +17,36 @@ def updateTableGUI() -> None:
     updateTableData()
     window["-TABLE-"].update(values=displayData)
 
+def modifyGUI() -> None:
+
+    modifyHeader = [
+        pg.Text("Account Type"),
+        pg.Text("Account Number"),
+        pg.Text("Transaction Date"),
+        pg.Text("Amount"),
+        pg.Text("Description")
+    ]
+
+    modifyLayout = [modifyHeader]
+
+    for x in selectData:
+        modifyLayout.append([
+            pg.Input(),
+            pg.Input(),
+            pg.Input(),
+            pg.Input(),
+            pg.Input(),
+        ])
+
+    modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
+
+    while True:
+        event, values = modifyWindow.read()
+        if event == pg.WIN_CLOSED:
+            break
+
+    modifyWindow.close()
+
 # this is the data that will be displayed on screen
 displayData = list()
 
@@ -27,11 +57,11 @@ updateTableData()
 selectData = list()
 
 # headers for table
-toprow = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
+header = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
 
 # create the table gui element
 mainTable = pg.Table(
-                values=displayData, headings=toprow,
+                values=displayData, headings=header,
                 auto_size_columns=True,
                 display_row_numbers=True,
                 justification='center',
@@ -46,6 +76,7 @@ mainTable = pg.Table(
                 tooltip="Bank Transactions"
             )
 
+# create manual entry gui element
 manualEntry = [
     [pg.Text("Account Type: "), pg.Input(key='-ACC_TYPE-', justification='left')],
     [pg.Text("Account Number: "), pg.Input(key='-ACC_NUM-', justification='left')],
@@ -55,15 +86,21 @@ manualEntry = [
     [pg.Button('Add Manual Entry', key='-MAN_ENTRY-')]
 ]
 
-deleteEntry = [pg.Button("Delete Entry", key='-DELETE-')]
+# create delete entries button
+deleteEntries = [pg.Button("Delete Entries", key='-DELETE-')]
 
+# create csv import button
 csvImport = [pg.Button('Import CSV File', key="-CSV-")]
 
-# create the gui layout
+# create the modify button
+modifyEntriesButton = [pg.Button('Modify Entries', key='-MODIFY-')]
+
+# create the entire gui layout
 layout = [
    [mainTable],
    [manualEntry, csvImport],
-   [deleteEntry]
+   [deleteEntries],
+   [modifyEntriesButton]
 ]
 
 # create the window
@@ -74,25 +111,17 @@ while True:
     event, values = window.read() # read both events and values inputted into elements
     # for debugging purposes, print the event and the values
     # print("event:", event, "values:", values)
+
     # if the window is closed, break the main loop
     if event == pg.WIN_CLOSED:
         break
-    # if a table element has been clicked do something
-    # if '+CLICKED+' in event and '-TABLE-' in event:
-    #     # pg.popup("You clicked row:{} Column: {}".format(event[2][0], event[2][1]))
-    #     # print(displayData[event[2][0]][0], displayData[event[2][0]][1], displayData[event[2][0]][2], displayData[event[2][0]][3], displayData[event[2][0]][4])
-    #     # store the selected data
-    #     # print(values['-TABLE-'])
-    #     print(event[2])
-        # selectData = displayData[event[2][0]]
-        # pass
+
     # if a table event has been clicked, store the clicked rows in selectData
     if event == '-TABLE-':
-        # print(values['-TABLE-'])
         selectData.clear()
         for x in values['-TABLE-']:
             selectData.append(displayData[x])
-        # print(selectData)
+
     # if csv import button has been clicked do something
     if '-CSV-' in event:
         # try to extract data from the csv file
@@ -142,5 +171,8 @@ while True:
                 pg.popup_error("Please make sure all fields are filled", title="An Error Occured")
         except:
             pg.popup_error("Please make sure all fields are filled with the correct data type", title="An Error Occured")
+
+    if '-MODIFY-' in event:
+        modifyGUI()
 # At the end of the program, close it
 window.close()
