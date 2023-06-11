@@ -35,13 +35,15 @@ mainTable = pg.Table(
                 auto_size_columns=True,
                 display_row_numbers=True,
                 justification='center',
+                select_mode='extended',
                 key='-TABLE-',
                 selected_row_colors='white on dark blue',
                 alternating_row_color="grey",
                 enable_events=True,
                 expand_x=True,
                 expand_y=True,
-                enable_click_events=True
+                enable_click_events=True,
+                tooltip="Bank Transactions"
             )
 
 manualEntry = [
@@ -76,11 +78,21 @@ while True:
     if event == pg.WIN_CLOSED:
         break
     # if a table element has been clicked do something
-    if '+CLICKED+' in event and '-TABLE-' in event:
-        # pg.popup("You clicked row:{} Column: {}".format(event[2][0], event[2][1]))
-        # print(displayData[event[2][0]][0], displayData[event[2][0]][1], displayData[event[2][0]][2], displayData[event[2][0]][3], displayData[event[2][0]][4])
-        selectData = displayData[event[2][0]]
-        pass
+    # if '+CLICKED+' in event and '-TABLE-' in event:
+    #     # pg.popup("You clicked row:{} Column: {}".format(event[2][0], event[2][1]))
+    #     # print(displayData[event[2][0]][0], displayData[event[2][0]][1], displayData[event[2][0]][2], displayData[event[2][0]][3], displayData[event[2][0]][4])
+    #     # store the selected data
+    #     # print(values['-TABLE-'])
+    #     print(event[2])
+        # selectData = displayData[event[2][0]]
+        # pass
+    # if a table event has been clicked, store the clicked rows in selectData
+    if event == '-TABLE-':
+        # print(values['-TABLE-'])
+        selectData.clear()
+        for x in values['-TABLE-']:
+            selectData.append(displayData[x])
+        # print(selectData)
     # if csv import button has been clicked do something
     if '-CSV-' in event:
         # try to extract data from the csv file
@@ -102,11 +114,12 @@ while True:
         except:
             pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file", title="An Error Occured")
 
-    # if a deletion was requested
+    # if a deletion was requested, delete the selected rows
     if '-DELETE-' in event:
         try:
-            accType, accNum, transDate, amount, description = selectData
-            mysql_management.deleteDataInSQL(accType, accNum, transDate, amount, description)
+            for x in selectData:
+                accType, accNum, transDate, amount, description = x
+                mysql_management.deleteDataInSQL(accType, accNum, transDate, amount, description)
             updateTableGUI()
         except:
             pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
