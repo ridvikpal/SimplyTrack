@@ -32,15 +32,18 @@ def modifyGUI() -> None:
 
     modifyLayout = [header]
 
-    for x in selectData:
+    for x, y in enumerate(selectData):
         modifyLayout.append([
-            pg.Text(displayData.index(x), size=(5,1), pad=(0, 0)),
-            pg.Input(default_text=x[0], size=(30,1), pad=(0, 0)),
-            pg.Input(default_text=x[1], size=(30,1), pad=(0, 0)),
-            pg.Input(default_text=x[2], size=(30,1), pad=(0, 0)),
-            pg.Input(default_text=x[3], size=(30,1), pad=(0, 0)),
-            pg.Input(default_text=x[4], size=(60,1), pad=(0, 0))
+            pg.Text(displayData.index(y), size=(5,1), pad=(0, 0)),
+            pg.Input(default_text=y[0], size=(30,1), pad=(0, 0), key=(x, 0)),
+            pg.Input(default_text=y[1], size=(30,1), pad=(0, 0), key=(x, 1)),
+            pg.Input(default_text=y[2], size=(30,1), pad=(0, 0), key=(x, 2)),
+            pg.Input(default_text=y[3], size=(30,1), pad=(0, 0), key=(x, 3)),
+            pg.Input(default_text=y[4], size=(60,1), pad=(0, 0), key=(x, 4))
         ])
+
+    modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
+    # modifyLayout.append(pg.Button("Update Records", key='-UPDATE-'))
 
     modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
 
@@ -48,6 +51,15 @@ def modifyGUI() -> None:
         event, values = modifyWindow.read()
         if event == pg.WIN_CLOSED:
             break
+        if event == '-UPDATE-':
+            # print(values)
+            for index, value in enumerate(selectData):
+                print(values[index, 0])
+                print(values[index, 1])
+                print(values[index, 2])
+                print(values[index, 3])
+                print(values[index, 4])
+
 
     modifyWindow.close()
 

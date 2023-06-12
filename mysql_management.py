@@ -33,6 +33,12 @@ def deleteDataInSQL(acc_type: str, acc_number: int, trans_date: datetime.date, a
     cursor.execute(f"delete from main where account_type = \"{acc_type}\" and account_number =  \"{acc_number}\" and transaction_date = \"{trans_date}\" and amount = \"{amount}\" and description = \"{description}\"")
     db.commit()
 
+# update existing records in a table
+def updateDataInSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str,
+                    acc_type_old: str, acc_number_old: int, trans_date_old: datetime.date, amount_old: Decimal, description_old: str) -> None:
+    cursor.execute(f"update main set account_type = \"{acc_type}\",  account_number =  \"{acc_number}\", transaction_date = \"{trans_date}\", amount = \"{amount}\", description = \"{description}\", where account_type = \"{acc_type_old}\" and account_number =  \"{acc_number_old}\" and transaction_date = \"{trans_date_old}\" and amount = \"{amount_old}\" and description = \"{description_old}\"")
+    db.commit()
+
 ''' CONNECT TO SQL DATABASE '''
 # credentials for sql server (later ask for from user)
 db = mysql.connector.connect(
