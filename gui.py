@@ -17,9 +17,9 @@ def updateTableGUI(window: pg.Window) -> None:
     updateTableData()
     window["-TABLE-"].update(values=displayData)
 
-# create the modify gui table
+# function to open the modify window
 def modifyGUI(mainWindow: pg.Window) -> None:
-    # the header to
+    # the header for the modify window
     header = [
         pg.Text("Row", size=(14,1)),
         pg.Text("Account Type", size=(22, 1)),
@@ -31,6 +31,7 @@ def modifyGUI(mainWindow: pg.Window) -> None:
 
     modifyLayout = [header]
 
+    # add all cells for the window
     for x, y in enumerate(selectData):
         modifyLayout.append([
             pg.Text(displayData.index(y), size=(5,1), pad=(0, 0)),
@@ -41,24 +42,26 @@ def modifyGUI(mainWindow: pg.Window) -> None:
             pg.Input(default_text=y[4], size=(60,1), pad=(0, 0), key=(x, 4))
         ])
 
+    # add the update records button
     modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
 
+    # create the actual window
     modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
 
+    # main loop for the modify window
     while True:
         event, values = modifyWindow.read()
+        # if the window is closed exit without updating
         if event == pg.WIN_CLOSED:
             break
+        # if the update records button is clicked then update them
         if event == '-UPDATE-':
             for index in range(len(selectData)):
                 newDataToUpdate = [values[index, 0], values[index, 1], values[index, 2], values[index, 3], values[index, 4]]
-
                 oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
-
                 mysql_management.updateDataInSQL(newDataToUpdate, oldDateToUpdate)
                 updateTableGUI(mainWindow)
             break
-
     modifyWindow.close()
 
 # this is the data that will be displayed on screen
