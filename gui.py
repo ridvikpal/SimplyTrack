@@ -76,11 +76,11 @@ def main() -> None:
     updateTableData()
 
     # headers for table
-    header = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
+    tableHeader = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
 
     # create the table gui element to show the SQL database
     mainTable = pg.Table(
-                    values=displayData, headings=header,
+                    values=displayData, headings=tableHeader,
                     auto_size_columns=True,
                     display_row_numbers=True,
                     justification='center',
@@ -96,30 +96,37 @@ def main() -> None:
                 )
 
     # create manual entry gui element
+    header = [
+        pg.Text("Account Type", size=(22, 1)),
+        pg.Text("Account Number", size=(24, 1)),
+        pg.Text("Transaction Date", size=(30, 1)),
+        pg.Text("Amount", size=(34, 1)),
+        pg.Text("Description", size=(30, 1))
+    ]
+
     manualEntry = [
-        [pg.Text("Account Type: "), pg.Input(key='-ACC_TYPE-', justification='left')],
-        [pg.Text("Account Number: "), pg.Input(key='-ACC_NUM-', justification='left')],
-        [pg.Text("Transaction Date: "), pg.CalendarButton('Select', target='-TRANS_DATE-', format='%Y-%m-%d'), pg.Input(key='-TRANS_DATE-', justification='left')],
-        [pg.Text("Amount: "), pg.Input(key='-AMOUNT-', justification='left')],
-        [pg.Text("Description: "), pg.Input(key='-DESCRIPT-', justification='left')],
-        [pg.Button('Add Manual Entry', key='-MAN_ENTRY-')]
+        pg.Input(size=(30,1), pad=(0, 0), key='-ACC_TYPE-'),
+        pg.Input(size=(30,1), pad=(0, 0), key='-ACC_NUM-'),
+        pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d'),
+        pg.Input(size=(30,1), pad=(0, 0), key='-TRANS_DATE-'),
+        pg.Input(size=(30,1), pad=(0, 0), key='-AMOUNT-'),
+        pg.Input(size=(60,1), pad=(0, 0), key='-DESCRIPT-'),
+        pg.Button("Enter Manual Entry", key='-MAN_ENTRY-')
     ]
 
     # create delete entries button
-    deleteEntries = [pg.Button("Delete Entries", key='-DELETE-')]
-
-    # create csv import button
-    csvImport = [pg.Button('Import CSV File', key="-CSV-")]
-
-    # create the modify button
-    modifyEntriesButton = [pg.Button('Modify Entries', key='-MODIFY-')]
+    tableControls = [
+        pg.Button('Modify Entries', key='-MODIFY-'),
+        pg.Button("Delete Entries", key='-DELETE-'),
+        pg.Button('Import CSV File', key="-CSV-")
+    ]
 
     # create the entire gui layout
     layout = [
         [mainTable],
-        [manualEntry, csvImport],
-        [deleteEntries],
-        [modifyEntriesButton]
+        [tableControls],
+        [header],
+        [manualEntry]
     ]
 
     # create the window
