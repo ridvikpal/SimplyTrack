@@ -8,12 +8,15 @@ import datetime
 # inserts multiple bank entries (transactions) into the SQL database
 def insertBulkDataIntoSQL(transactionList: list) -> None:
     for x in transactionList:
-        cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
+        add_entry = ("insert into main values(%s, %s, %s, %s, %s)")
+        # cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
+        cursor.execute(add_entry, x)
     db.commit()
 
 # inserts one single bank entry (transaction) into the SQL database
-def insertDataIntoSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str) -> None:
-    cursor.execute(f"insert into main values(\"{acc_type}\", {acc_number}, \"{trans_date}\", {amount}, \"{description}\")")
+def insertDataIntoSQL(transaction: list) -> None:
+    add_entry = ("insert into main values(%s, %s, %s, %s, %s)")
+    cursor.execute(add_entry, transaction)
     db.commit()
 
 # retrieves data from sql database
@@ -29,14 +32,26 @@ def getDataFromSQL(lastYear: bool = False) -> list():
     return sqlData
 
 # deletes an entry from the sql database
-def deleteDataInSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str) -> None:
-    cursor.execute(f"delete from main where account_type = \"{acc_type}\" and account_number =  \"{acc_number}\" and transaction_date = \"{trans_date}\" and amount = \"{amount}\" and description = \"{description}\"")
+def deleteDataInSQL(transactionList: list) -> None:
+    delete_entry = ("delete from main where "
+                    "account_type = %s and account_number = %s and "
+                    "transaction_date = %s and amount = %s and "
+                    "description = %s")
+    for x in transactionList:
+        cursor.execute(delete_entry, x)
     db.commit()
 
 # update existing records in a table
-def updateDataInSQL(acc_type: str, acc_number: int, trans_date: datetime.date, amount: Decimal, description: str,
-                    acc_type_old: str, acc_number_old: int, trans_date_old: datetime.date, amount_old: Decimal, description_old: str) -> None:
-    cursor.execute(f"update main set account_type = \"{acc_type}\",  account_number =  \"{acc_number}\", transaction_date = \"{trans_date}\", amount = \"{amount}\", description = \"{description}\", where account_type = \"{acc_type_old}\" and account_number =  \"{acc_number_old}\" and transaction_date = \"{trans_date_old}\" and amount = \"{amount_old}\" and description = \"{description_old}\"")
+def updateDataInSQL(newData: list, oldData: list) -> None:
+    update_entry = ("update main set "
+                    "account_type = %s, account_number = %s, "
+                    "transaction_date = %s, amount = %s, "
+                    "description = %s where "
+                    "account_type = %s and account_number = %s and "
+                    "transaction_date = %s and amount = %s and "
+                    "description = %s")
+    combinedList = newData + oldData
+    cursor.execute(update_entry, combinedList)
     db.commit()
 
 ''' CONNECT TO SQL DATABASE '''

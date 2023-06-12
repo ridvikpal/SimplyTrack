@@ -18,8 +18,7 @@ def updateTableGUI(window: pg.Window) -> None:
     window["-TABLE-"].update(values=displayData)
 
 # create the modify gui table
-def modifyGUI() -> None:
-
+def modifyGUI(mainWindow: pg.Window) -> None:
     # the header to
     header = [
         pg.Text("Row", size=(14,1)),
@@ -43,7 +42,6 @@ def modifyGUI() -> None:
         ])
 
     modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
-    # modifyLayout.append(pg.Button("Update Records", key='-UPDATE-'))
 
     modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
 
@@ -52,14 +50,14 @@ def modifyGUI() -> None:
         if event == pg.WIN_CLOSED:
             break
         if event == '-UPDATE-':
-            # print(values)
-            for index, value in enumerate(selectData):
-                print(values[index, 0])
-                print(values[index, 1])
-                print(values[index, 2])
-                print(values[index, 3])
-                print(values[index, 4])
+            for index in range(len(selectData)):
+                newDataToUpdate = [values[index, 0], values[index, 1], values[index, 2], values[index, 3], values[index, 4]]
 
+                oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
+
+                mysql_management.updateDataInSQL(newDataToUpdate, oldDateToUpdate)
+                updateTableGUI(mainWindow)
+            break
 
     modifyWindow.close()
 
@@ -164,9 +162,7 @@ def main() -> None:
         # if a deletion was requested, delete the selected rows
         if '-DELETE-' in event:
             try:
-                for x in selectData:
-                    accType, accNum, transDate, amount, description = x
-                    mysql_management.deleteDataInSQL(accType, accNum, transDate, amount, description)
+                mysql_management.deleteDataInSQL(selectData)
                 updateTableGUI(window)
             except:
                 pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
@@ -175,9 +171,9 @@ def main() -> None:
         if '-MAN_ENTRY-' in event:
             try:
                 # first make sure all entries are filled
-                accType, accNum, transDate, amount, description = values['-ACC_TYPE-'], values['-ACC_NUM-'], values['-TRANS_DATE-'], values['-AMOUNT-'], values['-DESCRIPT-']
+                transaction = [values['-ACC_TYPE-'], values['-ACC_NUM-'], values['-TRANS_DATE-'], values['-AMOUNT-'], values['-DESCRIPT-']]
                 if values['-ACC_TYPE-'] and values['-ACC_NUM-'] and values['-TRANS_DATE-'] and values['-AMOUNT-'] and values['-DESCRIPT-']:
-                    mysql_management.insertDataIntoSQL(accType,accNum, transDate, amount, description)
+                    mysql_management.insertDataIntoSQL(transaction)
                     updateTableGUI(window)
                     # clear input fields
                     window['-ACC_TYPE-']('')
@@ -191,7 +187,7 @@ def main() -> None:
                 pg.popup_error("Please make sure all fields are filled with the correct data type", title="An Error Occured")
 
         if '-MODIFY-' in event:
-            modifyGUI()
+            modifyGUI(window)
     # At the end of the program, close it
     window.close()
 
