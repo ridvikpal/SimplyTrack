@@ -5,6 +5,6 @@ A simple financial tracker that connects your bank transactions to an SQL server
 * Remove Existing Records Manually ✔
 * Create New Records Manually ✔
 * CSV File Bulk Upload Mode ✔
-* Modify Existing Records 🟡
+* Modify Existing Records ✔
 * Graph data points to show overall trend
 * Provide proper UI highlighting to indicate loss and/or gain
