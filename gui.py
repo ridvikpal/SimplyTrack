@@ -22,24 +22,24 @@ def modifyGUI() -> None:
 
     # the header to
     header = [
-        pg.Text("Row"),
-        pg.Text("Account Type"),
-        pg.Text("Account Number"),
-        pg.Text("Transaction Date"),
-        pg.Text("Amount"),
-        pg.Text("Description")
+        pg.Text("Row", size=(14,1)),
+        pg.Text("Account Type", size=(22, 1)),
+        pg.Text("Account Number", size=(24, 1)),
+        pg.Text("Transaction Date", size=(30, 1)),
+        pg.Text("Amount", size=(34, 1)),
+        pg.Text("Description", size=(30, 1))
     ]
 
     modifyLayout = [header]
 
     for x in selectData:
         modifyLayout.append([
-            pg.Text(displayData.index(x)),
-            pg.Input(default_text=x[0]),
-            pg.Input(default_text=x[1]),
-            pg.Input(default_text=x[2]),
-            pg.Input(default_text=x[3]),
-            pg.Input(default_text=x[4])
+            pg.Text(displayData.index(x), size=(5,1), pad=(0, 0)),
+            pg.Input(default_text=x[0], size=(30,1), pad=(0, 0)),
+            pg.Input(default_text=x[1], size=(30,1), pad=(0, 0)),
+            pg.Input(default_text=x[2], size=(30,1), pad=(0, 0)),
+            pg.Input(default_text=x[3], size=(30,1), pad=(0, 0)),
+            pg.Input(default_text=x[4], size=(60,1), pad=(0, 0))
         ])
 
     modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
