@@ -96,22 +96,13 @@ def main() -> None:
                 )
 
     # create manual entry gui element
-    header = [
-        pg.Text("Account Type", size=(22, 1)),
-        pg.Text("Account Number", size=(24, 1)),
-        pg.Text("Transaction Date", size=(30, 1)),
-        pg.Text("Amount", size=(34, 1)),
-        pg.Text("Description", size=(30, 1))
-    ]
-
     manualEntry = [
-        pg.Input(size=(30,1), pad=(0, 0), key='-ACC_TYPE-'),
-        pg.Input(size=(30,1), pad=(0, 0), key='-ACC_NUM-'),
-        pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d'),
-        pg.Input(size=(30,1), pad=(0, 0), key='-TRANS_DATE-'),
-        pg.Input(size=(30,1), pad=(0, 0), key='-AMOUNT-'),
-        pg.Input(size=(60,1), pad=(0, 0), key='-DESCRIPT-'),
-        pg.Button("Enter Manual Entry", key='-MAN_ENTRY-')
+        pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(20, 1))]], element_justification='center', expand_x=True),
+        pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(20, 1))]], element_justification='center', expand_x=True),
+        pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(20, 1))]], element_justification='center', expand_x=True),
+        pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(20, 1))]], element_justification='center', expand_x=True),
+        pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(50, 1))]], element_justification='center', expand_x=True),
+        pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom', expand_x=True)
     ]
 
     # create delete entries button
@@ -125,7 +116,7 @@ def main() -> None:
     layout = [
         [mainTable],
         [tableControls],
-        [header],
+        # [header],
         [manualEntry]
     ]
 
