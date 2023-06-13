@@ -110,17 +110,16 @@ def main() -> None:
         pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom', expand_x=True)
     ]
 
-    # create delete entries button
-    tableControls = [
-        pg.Button('Modify Entries', key='-MODIFY-'),
-        pg.Button("Delete Entries", key='-DELETE-'),
-        pg.Button('Import CSV File', key="-CSV-")
+    # below table layout where controls and info is kept
+    belowTable = [
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-")]], element_justification='left', expand_x=True),
+        pg.Column([[pg.Text("Current Table: main"), pg.Text("Current Database: bank_transactions")]], element_justification='right', expand_x=True),
     ]
 
     # create the entire gui layout
     layout = [
         [mainTable],
-        [tableControls],
+        [belowTable],
         [pg.HorizontalSeparator()],
         [manualEntry]
     ]
