@@ -32,10 +32,11 @@ def getDataFromSQL(lastYear: bool = False) -> list():
     return sqlData
 
 # deletes an entry from the sql database
-def deleteDataInSQL(transactionList: list) -> None:
-    delete_entry = ("delete from main where id = %d")
-    for x in transactionList:
-        cursor.execute(delete_entry, x[0])
+def deleteDataInSQL(transactionIDList: list) -> None:
+    # transactionIDList.sort(reverse=True)
+    delete_entry = ("delete from main where id = %s")
+    for x in transactionIDList:
+        cursor.execute(delete_entry, (x,))
     db.commit()
 
 # update existing records in a table

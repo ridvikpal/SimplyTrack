@@ -165,11 +165,14 @@ def main() -> None:
 
         # if a deletion was requested, delete the selected rows
         if '-DELETE-' in event:
-            try:
-                mysql_management.deleteDataInSQL(selectData)
-                updateTableGUI(window)
-            except:
-                pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
+            # try:
+            deleteList = list()
+            for x in selectData:
+                deleteList.append(x[0])
+            mysql_management.deleteDataInSQL(deleteList)
+            updateTableGUI(window)
+            # except:
+                # pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
 
         # if a manual entry is entered into the system
         if '-MAN_ENTRY-' in event:
