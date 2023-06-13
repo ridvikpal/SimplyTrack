@@ -8,14 +8,14 @@ import datetime
 # inserts multiple bank entries (transactions) into the SQL database
 def insertBulkDataIntoSQL(transactionList: list) -> None:
     for x in transactionList:
-        add_entry = ("insert into main values(%s, %s, %s, %s, %s)")
+        add_entry = ("insert into main(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
         # cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
         cursor.execute(add_entry, x)
     db.commit()
 
 # inserts one single bank entry (transaction) into the SQL database
 def insertDataIntoSQL(transaction: list) -> None:
-    add_entry = ("insert into main values(%s, %s, %s, %s, %s)")
+    add_entry = ("insert into main(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
     cursor.execute(add_entry, transaction)
     db.commit()
 
@@ -33,12 +33,9 @@ def getDataFromSQL(lastYear: bool = False) -> list():
 
 # deletes an entry from the sql database
 def deleteDataInSQL(transactionList: list) -> None:
-    delete_entry = ("delete from main where "
-                    "account_type = %s and account_number = %s and "
-                    "transaction_date = %s and amount = %s and "
-                    "description = %s")
+    delete_entry = ("delete from main where id = %d")
     for x in transactionList:
-        cursor.execute(delete_entry, x)
+        cursor.execute(delete_entry, x[0])
     db.commit()
 
 # update existing records in a table

@@ -9,7 +9,7 @@ def updateTableData() -> None:
     displayData.clear()
     for x in data:
         y = []
-        y.extend([x[0], x[1], x[2], x[3], x[4]])
+        y.extend([x[0], x[1], x[2], x[3], x[4], x[5]])
         displayData.append(y)
 
 # update the table data and the actual gui
@@ -79,14 +79,13 @@ def main() -> None:
     updateTableData()
 
     # headers for table
-    tableHeader = [ "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
+    tableHeader = [ "ID", "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
 
     # create the table gui element to show the SQL database
     mainTable = pg.Table(
                     values=displayData, headings=tableHeader,
                     auto_size_columns=True,
                     num_rows=30,
-                    display_row_numbers=True,
                     justification='center',
                     select_mode='extended',
                     key='-TABLE-',
