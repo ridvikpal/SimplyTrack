@@ -72,6 +72,9 @@ selectData = list()
 
 # define the main function
 def main() -> None:
+    # set the pysimplegui theme
+    pg.theme('DarkGrey13')
+
     # update the table data for the first time upon program startup
     updateTableData()
 
@@ -82,16 +85,18 @@ def main() -> None:
     mainTable = pg.Table(
                     values=displayData, headings=tableHeader,
                     auto_size_columns=True,
+                    num_rows=30,
                     display_row_numbers=True,
                     justification='center',
                     select_mode='extended',
                     key='-TABLE-',
                     selected_row_colors='white on dark blue',
-                    alternating_row_color="grey",
+                    # alternating_row_color="dark grey",
                     enable_events=True,
                     expand_x=True,
                     expand_y=True,
                     enable_click_events=True,
+                    border_width=4,
                     tooltip="Bank Transactions"
                 )
 
@@ -116,7 +121,7 @@ def main() -> None:
     layout = [
         [mainTable],
         [tableControls],
-        # [header],
+        [pg.HorizontalSeparator()],
         [manualEntry]
     ]
 
