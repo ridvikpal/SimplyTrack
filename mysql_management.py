@@ -40,15 +40,14 @@ def deleteDataInSQL(transactionIDList: list) -> None:
     db.commit()
 
 # update existing records in a table
-def updateDataInSQL(newData: list, oldData: list) -> None:
+def updateDataInSQL(newData: list, entryID: int) -> None:
     update_entry = ("update main set "
                     "account_type = %s, account_number = %s, "
                     "transaction_date = %s, amount = %s, "
                     "description = %s where "
-                    "account_type = %s and account_number = %s and "
-                    "transaction_date = %s and amount = %s and "
-                    "description = %s")
-    combinedList = newData + oldData
+                    "id = %s")
+    combinedList = newData
+    combinedList.append(entryID)
     cursor.execute(update_entry, combinedList)
     db.commit()
 

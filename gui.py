@@ -27,21 +27,21 @@ def modifyGUI(mainWindow: pg.Window) -> None:
     for x, y in enumerate(selectData):
         if x == 0:
             modifyLayout.append([
-                pg.Column([[pg.Text("ID")], [pg.Text(y[0])]], element_justification='center'),
-                pg.Column([[pg.Text("Account Type")], [pg.Input(default_text=y[1], key=(x, 0), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Account Number")], [pg.Input(default_text=y[2], key=(x, 1), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Transaction Date")], [pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 2), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Amount")], [pg.Input(default_text=y[4], key=(x, 3), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Description")], [pg.Input(default_text=y[5], key=(x, 4), pad=(1, 0))]], element_justification='center')
+                pg.Column([[pg.Text("ID")], [pg.Text(y[0], key=(x, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Account Type")], [pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Account Number")], [pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Transaction Date")], [pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Amount")], [pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Description")], [pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0))]], element_justification='center')
             ])
         else:
             modifyLayout.append([
-                pg.Column([[pg.Text(y[0])]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[1], key=(x, 0), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[2], key=(x, 1), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 2), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[4], key=(x, 3), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[5], key=(x, 4), pad=(1, 0))]], element_justification='center')
+                pg.Column([[pg.Text(y[0], key=(x, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0))]], element_justification='center')
             ])
 
 
@@ -60,12 +60,13 @@ def modifyGUI(mainWindow: pg.Window) -> None:
         # if the update records button is clicked then update them
         if event == '-UPDATE-':
             for index in range(len(selectData)):
-                newDataToUpdate = [values[index, 0], values[index, 1], values[index, 2], values[index, 3], values[index, 4]]
-                print(newDataToUpdate)
+                newDataToUpdate = [values[index, 1], values[index, 2], values[index, 3], values[index, 4], values[index, 5]]
+                # print(newDataToUpdate)
                 entryID = selectData[index][0]
+                # print(entryID)
                 # oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
                 mysql_management.updateDataInSQL(newDataToUpdate, entryID)
-                # updateTableGUI(mainWindow)
+                updateTableGUI(mainWindow)
             break
     modifyWindow.close()
 
