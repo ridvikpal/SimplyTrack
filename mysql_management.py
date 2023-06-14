@@ -51,10 +51,13 @@ def updateDataInSQL(newData: list, entryID: int) -> None:
     cursor.execute(update_entry, combinedList)
     db.commit()
 
-def manualQuery(query: str) -> str:
+# allows the user to perform a manual query on the database, and returns the result.
+def manualQuery(query: str) -> list:
     cursor.execute(query)
-
-    pass
+    result = list()
+    for x in cursor:
+        result.append(x)
+    return result
 
 ''' CONNECT TO SQL DATABASE '''
 # credentials for sql server (later ask for from user)

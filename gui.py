@@ -19,7 +19,6 @@ def updateTableGUI(window: pg.Window) -> None:
 
 # function to open the modify window
 def modifyGUI(mainWindow: pg.Window) -> None:
-
     # the layout to use for the modify window
     modifyLayout = []
 
@@ -70,9 +69,29 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                 pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
     modifyWindow.close()
 
-def manualQueryGUI() -> None:
+def customQueryGUI() -> None:
+    queryLayout = [
+        [pg.Column([[pg.Multiline(key='-INPUT-'), pg.Multiline(key='-OUTPUT-')]])],
+        [pg.Button("Enter Query", key='-ENTER-')]
+    ]
 
-    pass
+    # create the query Window
+    queryWindow = pg.Window("Test", queryLayout, resizable=False)
+
+    while True:
+        event, values = queryWindow.read()
+        # if the window is closed exit without updating
+        if event == pg.WIN_CLOSED:
+            break
+        # if the update records button is clicked then update them
+        if event == '-ENTER-':
+            try:
+                pass
+            except:
+                pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
+    queryWindow.close()
+
+
 
 # this is the data that will be displayed on screen
 displayData = list()
@@ -121,7 +140,7 @@ def main() -> None:
 
     # below table layout where controls and info is kept
     belowTable = [
-        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-")]], element_justification='left'),
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Custom Query", key='-QUERY-')]], element_justification='left'),
         pg.Column([[pg.Text("Current Table: main"), pg.Text("Current Database: bank_transactions")]], element_justification='right', expand_x=True),
     ]
 
@@ -204,8 +223,13 @@ def main() -> None:
             except:
                 pg.popup_error("Please make sure all fields are filled with the correct data type", title="An Error Occured")
 
+        # if modify data is requested
         if '-MODIFY-' in event:
             modifyGUI(window)
+
+        # if a custom query is requested
+        if '-QUERY-' in event:
+            customQueryGUI()
     # At the end of the program, close it
     window.close()
 
