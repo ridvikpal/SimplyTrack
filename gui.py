@@ -19,34 +19,37 @@ def updateTableGUI(window: pg.Window) -> None:
 
 # function to open the modify window
 def modifyGUI(mainWindow: pg.Window) -> None:
-    # the header for the modify window
-    header = [
-        pg.Text("Row", size=(14,1)),
-        pg.Text("Account Type", size=(22, 1)),
-        pg.Text("Account Number", size=(24, 1)),
-        pg.Text("Transaction Date", size=(30, 1)),
-        pg.Text("Amount", size=(34, 1)),
-        pg.Text("Description", size=(30, 1))
-    ]
 
-    modifyLayout = [header]
+    # the layout to use for the modify window
+    modifyLayout = []
 
     # add all cells for the window
     for x, y in enumerate(selectData):
-        modifyLayout.append([
-            pg.Text(displayData.index(y), size=(5,1), pad=(0, 0)),
-            pg.Input(default_text=y[0], size=(30,1), pad=(0, 0), key=(x, 0)),
-            pg.Input(default_text=y[1], size=(30,1), pad=(0, 0), key=(x, 1)),
-            pg.Input(default_text=y[2], size=(30,1), pad=(0, 0), key=(x, 2)),
-            pg.Input(default_text=y[3], size=(30,1), pad=(0, 0), key=(x, 3)),
-            pg.Input(default_text=y[4], size=(60,1), pad=(0, 0), key=(x, 4))
-        ])
+        if x == 0:
+            modifyLayout.append([
+                pg.Column([[pg.Text("ID")], [pg.Text(y[0])]], element_justification='center'),
+                pg.Column([[pg.Text("Account Type")], [pg.Input(default_text=y[1], key=(x, 0), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Account Number")], [pg.Input(default_text=y[2], key=(x, 1), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Transaction Date")], [pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 2), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Amount")], [pg.Input(default_text=y[4], key=(x, 3), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Text("Description")], [pg.Input(default_text=y[5], key=(x, 4), pad=(1, 0))]], element_justification='center')
+            ])
+        else:
+            modifyLayout.append([
+                pg.Column([[pg.Text(y[0])]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[1], key=(x, 0), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[2], key=(x, 1), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 2), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[4], key=(x, 3), pad=(1, 0))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[5], key=(x, 4), pad=(1, 0))]], element_justification='center')
+            ])
+
 
     # add the update records button
     modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
 
     # create the actual window
-    modifyWindow = pg.Window("Test", modifyLayout, resizable=True)
+    modifyWindow = pg.Window("Test", modifyLayout, resizable=False)
 
     # main loop for the modify window
     while True:
@@ -58,9 +61,11 @@ def modifyGUI(mainWindow: pg.Window) -> None:
         if event == '-UPDATE-':
             for index in range(len(selectData)):
                 newDataToUpdate = [values[index, 0], values[index, 1], values[index, 2], values[index, 3], values[index, 4]]
-                oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
-                mysql_management.updateDataInSQL(newDataToUpdate, oldDateToUpdate)
-                updateTableGUI(mainWindow)
+                print(newDataToUpdate)
+                entryID = selectData[index][0]
+                # oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
+                mysql_management.updateDataInSQL(newDataToUpdate, entryID)
+                # updateTableGUI(mainWindow)
             break
     modifyWindow.close()
 
@@ -101,17 +106,17 @@ def main() -> None:
 
     # create manual entry gui element
     manualEntry = [
-        pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(20, 1))]], element_justification='center', expand_x=True),
-        pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(20, 1))]], element_justification='center', expand_x=True),
-        pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(20, 1))]], element_justification='center', expand_x=True),
-        pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(20, 1))]], element_justification='center', expand_x=True),
-        pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(50, 1))]], element_justification='center', expand_x=True),
-        pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom', expand_x=True)
+        pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(20, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(20, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(20, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(20, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(50, 1))]], element_justification='center'),
+        pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom')
     ]
 
     # below table layout where controls and info is kept
     belowTable = [
-        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-")]], element_justification='left', expand_x=True),
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-")]], element_justification='left'),
         pg.Column([[pg.Text("Current Table: main"), pg.Text("Current Database: bank_transactions")]], element_justification='right', expand_x=True),
     ]
 
@@ -124,7 +129,7 @@ def main() -> None:
     ]
 
     # create the window
-    window = pg.Window("SimplyTrack", layout, resizable=True)
+    window = pg.Window("SimplyTrack", layout, resizable=False)
 
     # main event loop
     while True:
@@ -141,6 +146,7 @@ def main() -> None:
             selectData.clear()
             for x in values['-TABLE-']:
                 selectData.append(displayData[x])
+            # print(selectData)
 
         # if csv import button has been clicked do something
         if '-CSV-' in event:
