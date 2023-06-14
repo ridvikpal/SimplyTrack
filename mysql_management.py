@@ -51,6 +51,11 @@ def updateDataInSQL(newData: list, entryID: int) -> None:
     cursor.execute(update_entry, combinedList)
     db.commit()
 
+def manualQuery(query: str) -> str:
+    cursor.execute(query)
+
+    pass
+
 ''' CONNECT TO SQL DATABASE '''
 # credentials for sql server (later ask for from user)
 db = mysql.connector.connect(

@@ -59,16 +59,20 @@ def modifyGUI(mainWindow: pg.Window) -> None:
             break
         # if the update records button is clicked then update them
         if event == '-UPDATE-':
-            for index in range(len(selectData)):
-                newDataToUpdate = [values[index, 1], values[index, 2], values[index, 3], values[index, 4], values[index, 5]]
-                # print(newDataToUpdate)
-                entryID = selectData[index][0]
-                # print(entryID)
-                # oldDateToUpdate = [selectData[index][0], selectData[index][1], selectData[index][2], selectData[index][3], selectData[index][4]]
-                mysql_management.updateDataInSQL(newDataToUpdate, entryID)
-                updateTableGUI(mainWindow)
-            break
+            try:
+                for index in range(len(selectData)):
+                    newDataToUpdate = [values[index, 1], values[index, 2], values[index, 3], values[index, 4], values[index, 5]]
+                    entryID = selectData[index][0]
+                    mysql_management.updateDataInSQL(newDataToUpdate, entryID)
+                    updateTableGUI(mainWindow)
+                break
+            except:
+                pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
     modifyWindow.close()
+
+def manualQueryGUI() -> None:
+
+    pass
 
 # this is the data that will be displayed on screen
 displayData = list()
