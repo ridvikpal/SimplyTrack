@@ -2,6 +2,7 @@ import PySimpleGUI as pg
 import mysql_management
 import extract_csv
 from pathlib import Path
+import numpy
 
 # update the table data
 def updateTableData() -> None:
@@ -48,7 +49,7 @@ def modifyGUI(mainWindow: pg.Window) -> None:
     modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
 
     # create the actual window
-    modifyWindow = pg.Window("Test", modifyLayout, resizable=False)
+    modifyWindow = pg.Window("Modify Entries", modifyLayout, resizable=False)
 
     # main loop for the modify window
     while True:
@@ -71,12 +72,14 @@ def modifyGUI(mainWindow: pg.Window) -> None:
 
 def customQueryGUI() -> None:
     queryLayout = [
-        [pg.Column([[pg.Multiline(key='-INPUT-'), pg.Multiline(key='-OUTPUT-')]])],
+        # [pg.Column([[pg.Multiline(key='-INPUT-', size=(50, 30)), pg.Multiline(key='-OUTPUT-', size=(100, 30))]])],
+        [pg.Column([[pg.Text("Input")], [pg.Multiline(key='-INPUT-', size=(50, 30))]]),
+        pg.Column([[pg.Text("Input")], [pg.Multiline(key='-OUTPUT-', size=(100, 30), autoscroll=True, horizontal_scroll=True, echo_stdout_stderr=True)]])],
         [pg.Button("Enter Query", key='-ENTER-')]
     ]
 
     # create the query Window
-    queryWindow = pg.Window("Test", queryLayout, resizable=False)
+    queryWindow = pg.Window("Custom Query", queryLayout, resizable=False)
 
     while True:
         event, values = queryWindow.read()
@@ -85,10 +88,23 @@ def customQueryGUI() -> None:
             break
         # if the update records button is clicked then update them
         if event == '-ENTER-':
-            try:
-                pass
-            except:
-                pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
+            # try:
+            result = mysql_management.manualQuery(values['-INPUT-'])
+            # output = str()
+            # for x in result:
+            #     for y in x:
+            #         output += str(x)
+            #     output += '\n\n'
+            # print(output)
+            textOutput = str()
+            queryWindow['-OUTPUT-'].update('')
+            for x in result:
+                for y in x:
+                    textOutput += str(y) + " "
+                textOutput += '\n'
+            queryWindow['-OUTPUT-'].update(textOutput)
+            # except:
+                # pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
     queryWindow.close()
 
 
