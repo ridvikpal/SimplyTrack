@@ -2,7 +2,7 @@ import PySimpleGUI as pg
 import mysql_management
 import extract_csv
 from pathlib import Path
-import numpy
+import datetime
 
 # update the table data
 def updateTableData() -> None:
@@ -44,9 +44,18 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                 pg.Column([[pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0))]], element_justification='center')
             ])
 
+    # add a horizontal seperator for aesthetics
+    modifyLayout.append([pg.HorizontalSeparator()])
 
     # add the update records button
-    modifyLayout.append([pg.Button("Update Records", key='-UPDATE-')])
+    modifyLayout.append([
+        pg.Column([[pg.Button("Edit All Account Types", key='-ALL_TYPE-')]], element_justification='left'),
+        pg.Column([[pg.Button("Edit All Account Numbers", key='-ALL_NUMBER-')]], element_justification='left'),
+        pg.Column([[pg.Button("Edit All Transaction Dates", key='-ALL_DATE-')]], element_justification='left'),
+        pg.Column([[pg.Button("Edit All Amounts", key='-ALL_AMOUNT-')]], element_justification='left'),
+        pg.Column([[pg.Button("Edit All Descriptions", key='-ALL_DESCRIPT-')]], element_justification='left'),
+        pg.Column([[pg.Button("Update Records", key='-UPDATE-')]], element_justification='right', expand_x=True)
+    ])
 
     # create the actual window
     modifyWindow = pg.Window("Modify Entries", modifyLayout, resizable=False)
@@ -57,6 +66,32 @@ def modifyGUI(mainWindow: pg.Window) -> None:
         # if the window is closed exit without updating
         if event == pg.WIN_CLOSED:
             break
+        # if a request is made to update all account types
+        if event == '-ALL_TYPE-':
+            allDataValue = pg.popup_get_text("Enter the Account Type for all Selected Entries", title="Edit All Account Types")
+            for x, y in enumerate(selectData):
+                modifyWindow[x, 1].update(allDataValue)
+        # if a request is made to update all account numbers
+        if event == '-ALL_NUMBER-':
+            allDataValue = pg.popup_get_text("Enter the Account Number for all Selected Entries", title="Edit All Account Numbers")
+            for x, y in enumerate(selectData):
+                modifyWindow[x, 2].update(allDataValue)
+        # if a request is made to update all transaction dates
+        if event == '-ALL_DATE-':
+            allDataValue = pg.popup_get_date(title="Edit All Transaction Dates", no_titlebar=False)
+            allDataValue = datetime.date(month=allDataValue[0], day=allDataValue[1], year=allDataValue[2])
+            for x, y in enumerate(selectData):
+                modifyWindow[x, 3].update(allDataValue)
+        # if a request is made to update all amounts
+        if event == '-ALL_AMOUNT-':
+            allDataValue = pg.popup_get_text("Enter the Amount for all Selected Entries", title="Edit All Amounts")
+            for x, y in enumerate(selectData):
+                modifyWindow[x, 4].update(allDataValue)
+        # if a request is made to update all descriptions
+        if event == '-ALL_DESCRIPT-':
+            allDataValue = pg.popup_get_text("Enter the Description for all Selected Entries", title="Edit All Descriptions")
+            for x, y in enumerate(selectData):
+                modifyWindow[x, 5].update(allDataValue)
         # if the update records button is clicked then update them
         if event == '-UPDATE-':
             try:
