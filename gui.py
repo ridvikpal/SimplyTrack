@@ -142,19 +142,16 @@ def customQueryGUI() -> None:
                 pg.popup_error("There was an error executing the query, please ensure the query is correct:", e, title="An Error Occured")
     queryWindow.close()
 
-# this is the data that will be displayed on screen
-displayData = list()
+# function to create the main window (to enable theme switching)
+def createMainWindow(colour_theme: pg.theme) -> pg.Window:
+    if colour_theme:
+        pg.theme(colour_theme)
+        if colour_theme == 'DarkGrey13':
+            colour_button_text = "Light Mode"
+        else:
+            colour_button_text = "Dark Mode"
 
-# this is the selected data row
-selectData = list()
-
-# define the main function
-def main() -> None:
-    # set the pysimplegui theme
-    pg.theme('DarkGrey13')
-
-    # update the table data for the first time upon program startup
-    updateTableData()
+    # setup the layout
 
     # headers for table
     tableHeader = [ "ID", "Account Type", "Account Number", "Transaction Date", "Amount", "Description" ]
@@ -189,7 +186,7 @@ def main() -> None:
 
     # below table layout where controls and info is kept
     belowTable = [
-        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Custom Query", key='-QUERY-')]], element_justification='left'),
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
         pg.Column([[pg.Text("Current Table: main"), pg.Text("Current Database: bank_transactions")]], element_justification='right', expand_x=True),
     ]
 
@@ -201,8 +198,24 @@ def main() -> None:
         [manualEntry]
     ]
 
+    return pg.Window("SimplyTrack", layout, resizable=False)
+
+# this is the data that will be displayed on screen
+displayData = list()
+
+# this is the selected data row
+selectData = list()
+
+# define the main function
+def main() -> None:
+    # set the pysimplegui theme
+    colour_theme = 'DarkGrey13'
+
+    # update the table data for the first time upon program startup
+    updateTableData()
+
     # create the window
-    window = pg.Window("SimplyTrack", layout, resizable=False)
+    window = createMainWindow(colour_theme)
 
     # main event loop
     while True:
@@ -279,6 +292,14 @@ def main() -> None:
         # if a custom query is requested
         if '-QUERY-' in event:
             customQueryGUI()
+        # if a request to toglle between Light/Dark Mode is made
+        if '-COLOUR-' in event:
+            if colour_theme == 'DarkGrey13':
+                colour_theme = 'LightGrey2'
+            else:
+                colour_theme = 'DarkGrey13'
+            window.close()
+            window = createMainWindow(colour_theme)
     # At the end of the program, close it
     window.close()
 
