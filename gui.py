@@ -28,20 +28,20 @@ def modifyGUI(mainWindow: pg.Window) -> None:
         if x == 0:
             modifyLayout.append([
                 pg.Column([[pg.Text("ID")], [pg.Text(y[0], key=(x, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Account Type")], [pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Account Number")], [pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Transaction Date")], [pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Amount")], [pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Text("Description")], [pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0))]], element_justification='center')
+                pg.Column([[pg.Text("Account Type")], [pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.Text("Account Number")], [pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.Text("Transaction Date")], [pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0), size=(15, 1))]], element_justification='center'),
+                pg.Column([[pg.Text("Amount")], [pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.Text("Description")], [pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0), size=(60, 1))]], element_justification='center')
             ])
         else:
             modifyLayout.append([
                 pg.Column([[pg.Text(y[0], key=(x, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0))]], element_justification='center'),
-                pg.Column([[pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0))]], element_justification='center')
+                pg.Column([[pg.Input(default_text=y[1], key=(x, 1), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[2], key=(x, 2), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.CalendarButton('Select Date', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(default_text=y[3], key=(x, 3), pad=(1, 0), size=(15, 1))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[4], key=(x, 4), pad=(1, 0), size=(30, 1))]], element_justification='center'),
+                pg.Column([[pg.Input(default_text=y[5], key=(x, 5), pad=(1, 0), size=(60, 1))]], element_justification='center')
             ])
 
     # add a horizontal seperator for aesthetics
@@ -179,11 +179,11 @@ def main() -> None:
 
     # create manual entry gui element
     manualEntry = [
-        pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(20, 1))]], element_justification='center'),
-        pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(20, 1))]], element_justification='center'),
-        pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(20, 1))]], element_justification='center'),
-        pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(20, 1))]], element_justification='center'),
-        pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(50, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(30, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(30, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(15, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(30, 1))]], element_justification='center'),
+        pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(60, 1))]], element_justification='center'),
         pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom')
     ]
 
