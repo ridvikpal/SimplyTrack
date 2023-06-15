@@ -1,8 +1,6 @@
 ''' MODULE IMPORTS '''
-import extract_csv
 import mysql.connector
-from decimal import Decimal
-import datetime
+import mysql_authentication
 
 ''' FUNCTION DEFINITIONS '''
 # inserts multiple bank entries (transactions) into the SQL database
@@ -61,11 +59,15 @@ def manualQuery(query: str) -> list:
 
 ''' CONNECT TO SQL DATABASE '''
 # credentials for sql server (later ask for from user)
+
+# get the server serverConfiguration
+serverConfiguration = mysql_authentication.read_one_block_of_yaml_data('server_configuration')
+
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="MclarenP1",
-    database="bank_transactions"
+    host=serverConfiguration['Host'],
+    user=serverConfiguration['Username'],
+    passwd=serverConfiguration['Password'],
+    database=serverConfiguration['Database']
 )
 
 # create our cursor to perform operations
