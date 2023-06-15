@@ -70,7 +70,9 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                 pg.popup_error("There was an error updating the values, please ensure the data types are correct:", e, title="An Error Occured")
     modifyWindow.close()
 
+# function to open the custom query GUI
 def customQueryGUI() -> None:
+    # create the layout for query
     queryLayout = [
         [
             pg.Column([
@@ -84,6 +86,7 @@ def customQueryGUI() -> None:
     # create the query Window
     queryWindow = pg.Window("Custom Query", queryLayout, resizable=False)
 
+    # main event loop for query window
     while True:
         event, values = queryWindow.read()
         # if the window is closed exit without updating
@@ -103,8 +106,6 @@ def customQueryGUI() -> None:
             except Exception as e:
                 pg.popup_error("There was an error executing the query, please ensure the query is correct:", e, title="An Error Occured")
     queryWindow.close()
-
-
 
 # this is the data that will be displayed on screen
 displayData = list()
