@@ -66,15 +66,18 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                     mysql_management.updateDataInSQL(newDataToUpdate, entryID)
                     updateTableGUI(mainWindow)
                 break
-            except:
-                pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
+            except Exception as e:
+                pg.popup_error("There was an error updating the values, please ensure the data types are correct:", e, title="An Error Occured")
     modifyWindow.close()
 
 def customQueryGUI() -> None:
     queryLayout = [
-        # [pg.Column([[pg.Multiline(key='-INPUT-', size=(50, 30)), pg.Multiline(key='-OUTPUT-', size=(100, 30))]])],
-        [pg.Column([[pg.Text("Input")], [pg.Multiline(key='-INPUT-', size=(50, 30))]]),
-        pg.Column([[pg.Text("Input")], [pg.Multiline(key='-OUTPUT-', size=(100, 30), autoscroll=True, horizontal_scroll=True, echo_stdout_stderr=True)]])],
+        [
+            pg.Column([
+                [pg.Text("Input")], [pg.Multiline(key='-INPUT-', size=(100, 5))],
+                [pg.Text("Output")], [pg.Multiline(key='-OUTPUT-', size=(100, 30))]
+            ])
+        ],
         [pg.Button("Enter Query", key='-ENTER-')]
     ]
 
@@ -88,23 +91,17 @@ def customQueryGUI() -> None:
             break
         # if the update records button is clicked then update them
         if event == '-ENTER-':
-            # try:
-            result = mysql_management.manualQuery(values['-INPUT-'])
-            # output = str()
-            # for x in result:
-            #     for y in x:
-            #         output += str(x)
-            #     output += '\n\n'
-            # print(output)
-            textOutput = str()
-            queryWindow['-OUTPUT-'].update('')
-            for x in result:
-                for y in x:
-                    textOutput += str(y) + " "
-                textOutput += '\n'
-            queryWindow['-OUTPUT-'].update(textOutput)
-            # except:
-                # pg.popup_error("There was an error updating the values, please ensure the data types are correct", title="An Error Occured")
+            try:
+                result = mysql_management.manualQuery(values['-INPUT-'])
+                textOutput = str()
+                queryWindow['-OUTPUT-'].update('')
+                for x in result:
+                    for y in x:
+                        textOutput += str(y) + " "
+                    textOutput += '\n'
+                queryWindow['-OUTPUT-'].update(textOutput)
+            except Exception as e:
+                pg.popup_error("There was an error executing the query, please ensure the query is correct:", e, title="An Error Occured")
     queryWindow.close()
 
 
@@ -206,8 +203,8 @@ def main() -> None:
                         mysql_management.insertBulkDataIntoSQL(transactionsList)
                         updateTableGUI(window)
             # if there was some error, let the user know
-            except:
-                pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file", title="An Error Occured")
+            except Exception as e:
+                pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file:", e, title="An Error Occured")
 
         # if a deletion was requested, delete the selected rows
         if '-DELETE-' in event:
@@ -217,8 +214,8 @@ def main() -> None:
                     deleteList.append(x[0])
                 mysql_management.deleteDataInSQL(deleteList)
                 updateTableGUI(window)
-            except:
-                pg.popup_error("Please make sure you have selected an entry", title="An Error Occured")
+            except Exception as e:
+                pg.popup_error("Please make sure you have selected an entry:", e, title="An Error Occured")
 
         # if a manual entry is entered into the system
         if '-MAN_ENTRY-' in event:
@@ -236,8 +233,8 @@ def main() -> None:
                     window['-DESCRIPT-']('')
                 else:
                     pg.popup_error("Please make sure all fields are filled", title="An Error Occured")
-            except:
-                pg.popup_error("Please make sure all fields are filled with the correct data type", title="An Error Occured")
+            except Exception as e:
+                pg.popup_error("Please make sure all fields are filled with the correct data type: ", e, title="An Error Occured")
 
         # if modify data is requested
         if '-MODIFY-' in event:
