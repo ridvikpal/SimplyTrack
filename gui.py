@@ -102,7 +102,7 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                     updateTableGUI(mainWindow)
                 break
             except Exception as e:
-                pg.popup_error("There was an error updating the values, please ensure the data types are correct:", e, title="An Error Occured")
+                pg.popup_ok("Please ensure the data types are correct for each field:", e, title="An Error Occured")
     modifyWindow.close()
 
 # function to open the custom query GUI
@@ -139,7 +139,7 @@ def customQueryGUI() -> None:
                     textOutput += '\n'
                 queryWindow['-OUTPUT-'].update(textOutput)
             except Exception as e:
-                pg.popup_error("There was an error executing the query, please ensure the query is correct:", e, title="An Error Occured")
+                pg.popup_ok("Please ensure the query is correct:", e, title="An Error Occured")
     queryWindow.close()
 
 # function to create the main window (to enable theme switching)
@@ -200,6 +200,69 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
 
     return pg.Window("SimplyTrack", layout, resizable=False)
 
+def databaseInfoGUI() -> dict:
+    # set the theme
+    pg.theme('DarkGrey13')
+
+    # data to return
+    data = dict()
+
+    dbLayout = [
+        [pg.Column([[pg.Text("Please enter the database information"
+                 "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
+        [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
+        pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])],
+        [pg.Button("Create YAML File", key="-CREATE-")]
+    ]
+
+    dbWindow = pg.Window("Enter Database Information", dbLayout, resizable=False)
+
+    # main event loop for query window
+    while True:
+        event, values = dbWindow.read()
+        # if the window is closed exit without updating
+        if event == pg.WIN_CLOSED:
+            exit()
+        # if the update records button is clicked then update them
+        if event == '-CREATE-':
+            username = values['-USER-']
+            password = values['-PASSWD-']
+            host = values['-HOST-']
+            database = values['-DB-']
+            table = values['-TB-']
+            # make sure all fields are full
+            if username and password and host and database and table:
+                data = {
+                    'Username' : username,
+                    'Password' : password,
+                    'Host' : host,
+                    'Database' : database,
+                    'Table' : table
+                }
+                break
+            else:
+                pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured")
+    dbWindow.close()
+    return data
+
+def newDatabaseConnection() -> None:
+    while True:
+        # create the config file
+        information = databaseInfoGUI()
+        mysql_management.write_yaml_to_file(information, 'server_configuration')
+        serverConfiguration = information
+
+        # attempt to connect to the database
+        try:
+            mysql_management.setupDatabase(serverConfiguration)
+            return # after succesful connection, exit function
+        except Exception as e:
+            pg.popup_ok("The data entered was incorrect, please provide the correct data", e, title="Incorrect Data")
+
+            # remove the incorrect server configuration file and then restart the loop
+            serverConfigurationPath = Path("server_configuration.yaml")
+            serverConfigurationPath.unlink()
+
 # this is the data that will be displayed on screen
 displayData = list()
 
@@ -208,8 +271,31 @@ selectData = list()
 
 # define the main function
 def main() -> None:
-    # set the pysimplegui theme
+    # set the pysimplegui initial theme
     colour_theme = 'DarkGrey13'
+
+    # setup the server with the config file
+    configFile = Path("server_configuration.yaml")
+    serverConfiguration = dict()
+
+    # if the config file exists
+    if configFile.is_file():
+        # attempt to read the server configuration file and load the database
+        try:
+            serverConfiguration = mysql_management.read_one_block_of_yaml_data(configFile)
+            mysql_management.setupDatabase(serverConfiguration)
+        except Exception as e:
+            # inform user the server configuration file is corrupt
+            pg.popup_ok("There is an error in the data in the server_configuration.yaml file:", e,
+                        "You will be prompted to enter the correct database information to recreate the file", title="Incorrect YAML File")
+            # setup a new, correct server configuration file
+            configFile.unlink() # remove the existing server_configuration file
+            newDatabaseConnection()
+    # else the config file does not exist
+    else:
+        newDatabaseConnection()
+
+    # once a connection has been established, now start and use the program
 
     # update the table data for the first time upon program startup
     updateTableData()
@@ -253,7 +339,7 @@ def main() -> None:
                         updateTableGUI(window)
             # if there was some error, let the user know
             except Exception as e:
-                pg.popup_error("There was an error importing the csv file, please check the file path and/or csv file:", e, title="An Error Occured")
+                pg.popup_ok("Please check the file path and/or csv file:", e, title="An Error Occured")
 
         # if a deletion was requested, delete the selected rows
         if '-DELETE-' in event:
@@ -264,7 +350,7 @@ def main() -> None:
                 mysql_management.deleteDataInSQL(deleteList)
                 updateTableGUI(window)
             except Exception as e:
-                pg.popup_error("Please make sure you have selected an entry:", e, title="An Error Occured")
+                pg.popup_ok("Please make sure you have selected an entry:", e, title="An Error Occured")
 
         # if a manual entry is entered into the system
         if '-MAN_ENTRY-' in event:
@@ -281,9 +367,9 @@ def main() -> None:
                     window['-AMOUNT-']('')
                     window['-DESCRIPT-']('')
                 else:
-                    pg.popup_error("Please make sure all fields are filled", title="An Error Occured")
+                    pg.popup_ok("Please make sure all fields are filled", title="An Error Occured")
             except Exception as e:
-                pg.popup_error("Please make sure all fields are filled with the correct data type: ", e, title="An Error Occured")
+                pg.popup_ok("Please make sure all fields are filled with the correct data type: ", e, title="An Error Occured")
 
         # if modify data is requested
         if '-MODIFY-' in event:

@@ -1,6 +1,8 @@
 ''' MODULE IMPORTS '''
 import mysql.connector
-import mysql_authentication
+from pathlib import Path
+import gui
+import yaml
 
 ''' FUNCTION DEFINITIONS '''
 # inserts multiple bank entries (transactions) into the SQL database
@@ -57,18 +59,29 @@ def manualQuery(query: str) -> list:
         result.append(x)
     return result
 
-''' CONNECT TO SQL DATABASE '''
-# credentials for sql server (later ask for from user)
+# function to write yaml file
+def write_yaml_to_file(data,filename) -> None:
+    with open(f'{filename}.yaml', 'w',) as f :
+        yaml.dump(data,f,sort_keys=False)
+    # print('Written to file successfully')
 
-# get the server serverConfiguration
-serverConfiguration = mysql_authentication.read_one_block_of_yaml_data('server_configuration')
+# function to read one block of a yaml file and returns it as a dictionary
+def read_one_block_of_yaml_data(file) -> dict:
+    with open(file,'r') as f:
+        output = yaml.safe_load(f)
+    return output
 
-db = mysql.connector.connect(
-    host=serverConfiguration['Host'],
-    user=serverConfiguration['Username'],
-    passwd=serverConfiguration['Password'],
-    database=serverConfiguration['Database']
-)
+# function to setup the database and connect to mySQL
+def setupDatabase(data: dict) -> None:
+    # create a global database object
+    global db
+    db = mysql.connector.connect(
+        host=data['Host'],
+        user=data['Username'],
+        passwd=data['Password'],
+        database=data['Database']
+    )
 
-# create our cursor to perform operations
-cursor = db.cursor()
+    # create a global cursor object
+    global cursor
+    cursor = db.cursor()
