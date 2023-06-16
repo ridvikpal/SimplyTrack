@@ -212,7 +212,7 @@ def databaseInfoGUI() -> dict:
                  "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
         [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
         pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])],
-        [pg.Button("Create YAML File", key="-CREATE-")]
+        [pg.Button("Create YAML File", key="-CREATE-"), pg.Checkbox("Create New Database", key='-NEW_DB-'), pg.Checkbox("Create New Table", key='-NEW_TB-')]
     ]
 
     dbWindow = pg.Window("Enter Database Information", dbLayout, resizable=False)
@@ -230,6 +230,8 @@ def databaseInfoGUI() -> dict:
             host = values['-HOST-']
             database = values['-DB-']
             table = values['-TB-']
+            newDB = values['-NEW_DB-']
+            newTB = values['-NEW_TB-']
             # make sure all fields are full
             if username and password and host and database and table:
                 data = {
@@ -243,14 +245,14 @@ def databaseInfoGUI() -> dict:
             else:
                 pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured")
     dbWindow.close()
-    return data
+    return data, newDB, newTB
 
 def newDatabaseConnection() -> None:
     while True:
         # create the config file
         information = databaseInfoGUI()
         mysql_management.write_yaml_to_file(information, 'server_configuration')
-        serverConfiguration = information
+        serverConfiguration = information[0]
 
         # attempt to connect to the database
         try:
