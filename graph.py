@@ -38,7 +38,7 @@ def showGraph(data: list, lightTheme: bool):
 
             plt.show()
     else:
-        with plt.style.context('fivethirtyeight'):
+        with plt.style.context('classic'):
             # setup the account data dictionary
             accountData = dict()
             for x in data:
