@@ -207,13 +207,27 @@ def databaseInfoGUI() -> dict:
     # data to return
     data = dict()
 
-    dbLayout = [
-        [pg.Column([[pg.Text("Please enter the database information"
+    dbLayout = []
+
+    dbLayout.append([pg.Column([
+        [pg.Column([[pg.Text("Please enter the database information. "
                  "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
         [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
-        pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])],
-        [pg.Button("Create YAML File", key="-CREATE-"), pg.Checkbox("Create New Database", key='-NEW_DB-'), pg.Checkbox("Create New Table", key='-NEW_TB-')]
-    ]
+        pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])]
+    ])])
+
+    # dbLayout = [
+    #     [pg.Column([[pg.Text("Please enter the database information"
+    #              "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
+    #     [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
+    #     pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])],
+    #     # [pg.Button("Create YAML File", key="-CREATE-"), pg.Checkbox("Create New Database", key='-NEW_DB-'), pg.Checkbox("Create New Table", key='-NEW_TB-')]
+    # ]
+
+    dbLayout.append([
+        pg.Column([[pg.Radio("Use Existing Database and Table", "database", default=True)], [pg.Radio("Create Database and Table", "database", key='-NEW_DB-')], [pg.Radio("Create Table", "database", key='-NEW_TB-')]], expand_x=True, expand_y=True, element_justification='left'),
+        pg.Column([[pg.Button("Create YAML File", key="-CREATE-")]], element_justification='right')
+    ])
 
     dbWindow = pg.Window("Enter Database Information", dbLayout, resizable=False)
 
@@ -251,12 +265,26 @@ def newDatabaseConnection() -> None:
     while True:
         # create the config file
         information = databaseInfoGUI()
-        mysql_management.write_yaml_to_file(information, 'server_configuration')
         serverConfiguration = information[0]
+        newDB = information[1]
+        newTB = information[2]
+        mysql_management.write_yaml_to_file(serverConfiguration, 'server_configuration')
 
         # attempt to connect to the database
         try:
-            mysql_management.setupDatabase(serverConfiguration)
+            mysql_management.setupSQL(serverConfiguration)
+
+            # connect to the right database
+            if newDB == True: # if a new database should be created
+                mysql_management.setupDatabase(serverConfiguration['Database'], new=True)
+                mysql_management.setupTable(serverConfiguration['Table'], new=True)
+            elif newTB == True:
+                mysql_management.setupDatabase(serverConfiguration['Database'])
+                mysql_management.setupTable(serverConfiguration['Table'], new=True)
+            else:
+                mysql_management.setupDatabase(serverConfiguration['Database'])
+                mysql_management.setupTable(serverConfiguration['Table'])
+
             return # after succesful connection, exit function
         except Exception as e:
             pg.popup_ok("The data entered was incorrect, please provide the correct data", e, title="Incorrect Data")
@@ -285,7 +313,9 @@ def main() -> None:
         # attempt to read the server configuration file and load the database
         try:
             serverConfiguration = mysql_management.read_one_block_of_yaml_data(configFile)
-            mysql_management.setupDatabase(serverConfiguration)
+            mysql_management.setupSQL(serverConfiguration)
+            mysql_management.setupDatabase(serverConfiguration['Database'])
+            mysql_management.setupTable(serverConfiguration['Table'])
         except Exception as e:
             # inform user the server configuration file is corrupt
             pg.popup_ok("There is an error in the data in the server_configuration.yaml file:", e,

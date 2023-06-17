@@ -72,16 +72,39 @@ def read_one_block_of_yaml_data(file) -> dict:
     return output
 
 # function to setup the database and connect to mySQL
-def setupDatabase(data: dict) -> None:
+def setupSQL(data: dict) -> None:
     # create a global database object
     global db
     db = mysql.connector.connect(
         host=data['Host'],
         user=data['Username'],
-        passwd=data['Password'],
-        database=data['Database']
+        passwd=data['Password']
+        # database=data['Database']
     )
 
     # create a global cursor object
     global cursor
     cursor = db.cursor()
+
+# setup a database
+def setupDatabase(name: str, new:bool = False) -> None:
+    if new == True:
+        # statement = ("create database %s") # for some reason this doesn't work???
+        cursor.execute("create database " + name)
+        db.commit()
+    db.database = name
+
+def setupTable(name: str, new: bool = False) -> None:
+    global table
+    if new == True:
+        statement = "create table " + name + ("(id mediumint not null auto_increment, "
+                       "account_type mediumtext, account_number bigint, "
+                       "transaction_date date, amount double precision, "
+                       "description longtext, primary key(id))")
+        # statement = ("create table %s(id mediumint not null auto_increment, "
+        #                "account_type mediumtext, account_number bigint, "
+        #                "transaction_date date, amount double precision, "
+        #                "description longtext, primary key(id))")
+        cursor.execute(statement)
+        db.commit()
+    table = name
