@@ -22,6 +22,7 @@ def getDataFromSQL(lastYear: bool = False) -> list():
     if lastYear == False:
         cursor.execute("select * from " + table)
     else:
+        # this query only retrieves the last year's entries, but is not really used, for a future feature
         cursor.execute("select * from " + table + " where transaction_date between date_sub(now(), interval 1 year) and now();")
 
     sqlData = list()
@@ -84,7 +85,7 @@ def setupSQL(data: dict) -> None:
     global cursor
     cursor = db.cursor()
 
-# setup a database
+# setup the database we will use
 def setupDatabase(name: str, new:bool = False) -> None:
     if new == True:
         # statement = ("create database %s") # for some reason this doesn't work???
@@ -92,6 +93,7 @@ def setupDatabase(name: str, new:bool = False) -> None:
         db.commit()
     db.database = name
 
+# set up the table we will use
 def setupTable(name: str, new: bool = False) -> None:
     global table
     if new == True:

@@ -1,9 +1,11 @@
+''' MODULE IMPORTS'''
 import PySimpleGUI as pg
 import mysql_management
 import extract_csv
 from pathlib import Path
 import datetime
 
+''' FUNCTION DEFINITIONS '''
 # update the table data
 def updateTableData() -> None:
     data = mysql_management.getDataFromSQL()
@@ -13,7 +15,7 @@ def updateTableData() -> None:
         y.extend([x[0], x[1], x[2], x[3], x[4], x[5]])
         displayData.append(y)
 
-# update the table data and the actual gui
+# update the table data and the actual table gui
 def updateTableGUI(window: pg.Window) -> None:
     updateTableData()
     window["-TABLE-"].update(values=displayData)
@@ -200,6 +202,7 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
 
     return pg.Window("SimplyTrack", layout, resizable=False)
 
+# function to create the startup dialog box gui that allows the user to create a yaml SQL configuration file
 def databaseInfoGUI() -> dict:
     # set the theme
     pg.theme('DarkGrey13')
@@ -207,6 +210,7 @@ def databaseInfoGUI() -> dict:
     # data to return
     data = dict()
 
+    # create the layout
     dbLayout = []
 
     dbLayout.append([pg.Column([
@@ -215,14 +219,6 @@ def databaseInfoGUI() -> dict:
         [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
         pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])]
     ])])
-
-    # dbLayout = [
-    #     [pg.Column([[pg.Text("Please enter the database information"
-    #              "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
-    #     [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
-    #     pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])],
-    #     # [pg.Button("Create YAML File", key="-CREATE-"), pg.Checkbox("Create New Database", key='-NEW_DB-'), pg.Checkbox("Create New Table", key='-NEW_TB-')]
-    # ]
 
     dbLayout.append([
         pg.Column([[pg.Radio("Use Existing Database and Table", "database", default=True)], [pg.Radio("Create Database and Table", "database", key='-NEW_DB-')], [pg.Radio("Create Table", "database", key='-NEW_TB-')]], expand_x=True, expand_y=True, element_justification='left'),
@@ -244,6 +240,7 @@ def databaseInfoGUI() -> dict:
             host = values['-HOST-']
             database = values['-DB-']
             table = values['-TB-']
+            # get the values of whether or not we are creating a database/table
             newDB = values['-NEW_DB-']
             newTB = values['-NEW_TB-']
             # make sure all fields are full
@@ -259,8 +256,9 @@ def databaseInfoGUI() -> dict:
             else:
                 pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured")
     dbWindow.close()
-    return data, newDB, newTB
+    return data, newDB, newTB # return the data
 
+# new yaml file setup and start the program
 def newDatabaseConnection() -> None:
     while True:
         # create the config file
