@@ -4,6 +4,7 @@ import mysql_management
 import extract_csv
 from pathlib import Path
 import datetime
+import graph
 
 ''' FUNCTION DEFINITIONS '''
 # update the table data
@@ -188,7 +189,7 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
 
     # below table layout where controls and info is kept
     belowTable = [
-        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Graph Data", key='-GRAPH-'), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
         pg.Column([[pg.Text("Current Table: " + mysql_management.table), pg.Text("Current Database: " + mysql_management.db.database)]], element_justification='right', expand_x=True),
     ]
 
@@ -408,6 +409,7 @@ def main() -> None:
         # if a custom query is requested
         if '-QUERY-' in event:
             customQueryGUI()
+
         # if a request to toglle between Light/Dark Mode is made
         if '-COLOUR-' in event:
             if colour_theme == 'DarkGrey13':
@@ -416,6 +418,9 @@ def main() -> None:
                 colour_theme = 'DarkGrey13'
             window.close()
             window = createMainWindow(colour_theme)
+
+        if '-GRAPH-' in event:
+            graph.showGraph(displayData)
     # At the end of the program, close it
     window.close()
 
