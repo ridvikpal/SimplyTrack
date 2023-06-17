@@ -420,7 +420,10 @@ def main() -> None:
             window = createMainWindow(colour_theme)
 
         if '-GRAPH-' in event:
-            graph.showGraph(displayData)
+            if colour_theme == 'DarkGrey13':
+                graph.showGraph(displayData, False)
+            else:
+                graph.showGraph(displayData, True)
     # At the end of the program, close it
     window.close()
 
