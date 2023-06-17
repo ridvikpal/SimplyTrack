@@ -2,10 +2,16 @@ import matplotlib.pyplot as plt
 import itertools
 
 def showGraph(data: list):
+    # setup the account data dictionary
     accountData = dict()
     for x in data:
         if x[2] not in accountData.keys():
             accountData.update({x[2]: None})
+
+    # create a matplotlib figure to house the plot in
+    graphFigure = plt.figure("Graph of Account Balance")
+
+    # add data to the account data dictionary
     for x in accountData:
         yData = list()
         xData = list()
@@ -19,7 +25,7 @@ def showGraph(data: list):
         plt.plot(xData, yData, label=x)
 
     # actually show the graph
-    plt.legend()
+    plt.legend(title="Account Number", fancybox=True)
     plt.xlabel("Date")
     plt.ylabel("Amount ($)")
     plt.title("Account Balance", loc='center')
