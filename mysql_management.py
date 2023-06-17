@@ -1,30 +1,28 @@
 ''' MODULE IMPORTS '''
 import mysql.connector
-from pathlib import Path
-import gui
 import yaml
 
 ''' FUNCTION DEFINITIONS '''
 # inserts multiple bank entries (transactions) into the SQL database
 def insertBulkDataIntoSQL(transactionList: list) -> None:
     for x in transactionList:
-        add_entry = ("insert into main(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
-        # cursor.execute(f"insert into main values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
+        add_entry = "insert into " + table + ("(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
+        # cursor.execute(f"insert into table values(\"{x[0]}\", {x[1]}, \"{x[2]}\", {x[3]}, \"{x[4]}\")")
         cursor.execute(add_entry, x)
     db.commit()
 
 # inserts one single bank entry (transaction) into the SQL database
 def insertDataIntoSQL(transaction: list) -> None:
-    add_entry = ("insert into main(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
+    add_entry = "insert into " + table + ("(account_type, account_number, transaction_date, amount, description) values(%s, %s, %s, %s, %s)")
     cursor.execute(add_entry, transaction)
     db.commit()
 
 # retrieves data from sql database
 def getDataFromSQL(lastYear: bool = False) -> list():
     if lastYear == False:
-        cursor.execute("select * from main")
+        cursor.execute("select * from " + table)
     else:
-        cursor.execute("select * from main where transaction_date between date_sub(now(), interval 1 year) and now();")
+        cursor.execute("select * from " + table + " where transaction_date between date_sub(now(), interval 1 year) and now();")
 
     sqlData = list()
     for x in cursor:
@@ -34,14 +32,14 @@ def getDataFromSQL(lastYear: bool = False) -> list():
 # deletes an entry from the sql database
 def deleteDataInSQL(transactionIDList: list) -> None:
     # transactionIDList.sort(reverse=True)
-    delete_entry = ("delete from main where id = %s")
+    delete_entry = ("delete from " + table + " where id = %s")
     for x in transactionIDList:
         cursor.execute(delete_entry, (x,))
     db.commit()
 
 # update existing records in a table
 def updateDataInSQL(newData: list, entryID: int) -> None:
-    update_entry = ("update main set "
+    update_entry = "update " + table + (" set "
                     "account_type = %s, account_number = %s, "
                     "transaction_date = %s, amount = %s, "
                     "description = %s where "
@@ -101,7 +99,7 @@ def setupTable(name: str, new: bool = False) -> None:
                        "account_type mediumtext, account_number bigint, "
                        "transaction_date date, amount double precision, "
                        "description longtext, primary key(id))")
-        # statement = ("create table %s(id mediumint not null auto_increment, "
+        # statement = ("create table %s(id mediumint not null auto_increment, " # doesn't work for some reason
         #                "account_type mediumtext, account_number bigint, "
         #                "transaction_date date, amount double precision, "
         #                "description longtext, primary key(id))")

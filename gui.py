@@ -187,7 +187,7 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
     # below table layout where controls and info is kept
     belowTable = [
         pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
-        pg.Column([[pg.Text("Current Table: main"), pg.Text("Current Database: bank_transactions")]], element_justification='right', expand_x=True),
+        pg.Column([[pg.Text("Current Table: " + mysql_management.table), pg.Text("Current Database: " + mysql_management.db.database)]], element_justification='right', expand_x=True),
     ]
 
     # create the entire gui layout
