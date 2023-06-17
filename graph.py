@@ -10,6 +10,8 @@ def showGraph(data: list):
 
     # create a matplotlib figure to house the plot in
     graphFigure = plt.figure("Graph of Account Balance")
+    graphFigure.set_figheight(8)
+    graphFigure.set_figwidth(14)
 
     # add data to the account data dictionary
     for x in accountData:
