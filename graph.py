@@ -1,9 +1,36 @@
 import matplotlib.pyplot as plt
 import itertools
+import numpy as np
+
+def on_pick(event):
+    annotation_visibility = dataPointAnnotation.get_visible()
+    if annotation_visibility:
+        dataPointAnnotation.set_visible(False)
+    line = event.artist
+    xdata, ydata = line.get_data()
+    ind = event.ind
+    # print('selected point is:', np.array([xdata[ind], ydata[ind]]).T)
+    xPoint = xdata[ind]
+    yPoint = ydata[ind]
+
+    dataPointAnnotation.xy = (xPoint, yPoint)
+    text_label = np.array([xdata[ind], ydata[ind]]).T
+    dataPointAnnotation.set_text(text_label.all())
+    if graphTheme == 'classic':
+        dataPointAnnotation.get_bbox_patch().set_facecolor('white')
+    else:
+        dataPointAnnotation.get_bbox_patch().set_facecolor('black')
+    # dataPointAnnotation.set_alpha(0.4)
+    dataPointAnnotation.set_visible(True)
+    graphFigure.canvas.draw_idle()
+
 
 def showGraph(data: list, theme: str):
     global graphFigure
     global ax
+    global dataPointAnnotation
+    global graphTheme
+    graphTheme = theme
     with plt.style.context(theme):
         # setup the account data dictionary
         accountData = dict()
@@ -28,7 +55,19 @@ def showGraph(data: list, theme: str):
             xData.sort()
             yData = list(itertools.accumulate(yData)) # add up all the transactions
             accountData[x] = [xData, yData]
-            plt.plot(xData, yData, label=x, marker='o')
+            plt.plot(xData, yData, label=x, marker='o', picker=5)
+
+        dataPointAnnotation = ax.annotate(
+            text='',
+            xy=(0, 0),
+            xytext=(15, 15), # distance from x, y
+            textcoords='offset points',
+            bbox={'boxstyle': 'round', 'fc': 'w'},
+            arrowprops={'arrowstyle': '->'}
+        )
+        dataPointAnnotation.set_visible(False)
+
+        cid = graphFigure.canvas.mpl_connect('pick_event', on_pick)
 
         # actually show the graph
         plt.legend(title="Account Number", fancybox=True)
