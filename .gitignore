@@ -2,3 +2,4 @@
 **/.vscode
 **/test.py
 **/server_configuration.yaml
+**.bin
