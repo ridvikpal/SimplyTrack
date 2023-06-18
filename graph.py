@@ -9,12 +9,12 @@ def on_pick(event):
     line = event.artist
     xdata, ydata = line.get_data()
     ind = event.ind
-    xPoint = xdata[ind]
-    yPoint = ydata[ind]
+    xPoint = xdata[ind][0]
+    yPoint = ydata[ind][0]
 
     dataPointAnnotation.xy = (xPoint, yPoint)
     # text_label = np.array([xdata[ind], ydata[ind]]).T
-    text_label = "(" + xPoint[0].strftime("%Y-%m-%d") + ", " + str(yPoint[0]) + ")"
+    text_label = "(" + xPoint.strftime("%Y-%m-%d") + ", " + "{:.2f}".format(yPoint) + ")"
     dataPointAnnotation.set_text(text_label)
     if graphTheme == 'classic':
         dataPointAnnotation.get_bbox_patch().set_facecolor('white')
