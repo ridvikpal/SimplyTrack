@@ -13,14 +13,12 @@ def on_pick(event):
     yPoint = ydata[ind][0]
 
     dataPointAnnotation.xy = (xPoint, yPoint)
-    # text_label = np.array([xdata[ind], ydata[ind]]).T
     text_label = "(" + xPoint.strftime("%Y-%m-%d") + ", " + "{:.2f}".format(yPoint) + ")"
     dataPointAnnotation.set_text(text_label)
     if graphTheme == 'classic':
         dataPointAnnotation.get_bbox_patch().set_facecolor('white')
     else:
         dataPointAnnotation.get_bbox_patch().set_facecolor('black')
-    # dataPointAnnotation.set_alpha(0.4)
     dataPointAnnotation.set_visible(True)
     graphFigure.canvas.draw_idle()
 
@@ -60,8 +58,9 @@ def showGraph(data: list, theme: str):
         dataPointAnnotation = ax.annotate(
             text='',
             xy=(0, 0),
-            xytext=(15, 15), # distance from x, y
+            xytext=(-20, 20), # distance from x, y
             textcoords='offset points',
+            ha='center',
             bbox={'boxstyle': 'round', 'fc': 'w'},
             arrowprops={'arrowstyle': '->'}
         )
