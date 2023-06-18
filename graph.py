@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import itertools
 
 def showGraph(data: list, theme: str):
+    global graphFigure
+    global ax
     with plt.style.context(theme):
         # setup the account data dictionary
         accountData = dict()
@@ -11,6 +13,7 @@ def showGraph(data: list, theme: str):
 
         # create a matplotlib figure to house the plot in
         graphFigure = plt.figure("Graph of Account Balance")
+        ax = graphFigure.add_subplot(111)
         graphFigure.set_figheight(8)
         graphFigure.set_figwidth(14)
 
@@ -25,7 +28,7 @@ def showGraph(data: list, theme: str):
             xData.sort()
             yData = list(itertools.accumulate(yData)) # add up all the transactions
             accountData[x] = [xData, yData]
-            plt.plot(xData, yData, label=x)
+            plt.plot(xData, yData, label=x, marker='o')
 
         # actually show the graph
         plt.legend(title="Account Number", fancybox=True)
