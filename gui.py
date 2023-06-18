@@ -177,20 +177,21 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
                     tooltip="Bank Transactions"
                 )
 
+    # below table layout where controls and info is kept
+    belowTable = [
+        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Graph Data", key='-GRAPH-'), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
+        pg.Column([[pg.Text("Current Table: " + mysql_management.table), pg.Text("Current Database: " + mysql_management.db.database)]], element_justification='right', expand_x=True),
+    ]
+
     # create manual entry gui element
     manualEntry = [
+        pg.Column([[pg.Button("Autofill Data", key='-AUTOFILL-', pad=(1, 0))]], vertical_alignment='bottom'),
         pg.Column([[pg.Text("Account Type", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_TYPE-', size=(30, 1))]], element_justification='center'),
         pg.Column([[pg.Text("Account Number", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-ACC_NUM-', size=(30, 1))]], element_justification='center'),
         pg.Column([[pg.Text("Transaction Date", auto_size_text=True)], [pg.CalendarButton('Select Date', target='-TRANS_DATE-', format='%Y-%m-%d', pad=(1, 0), no_titlebar=False), pg.Input(pad=(1, 0), key='-TRANS_DATE-', size=(15, 1))]], element_justification='center'),
         pg.Column([[pg.Text("Amount", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-AMOUNT-', size=(30, 1))]], element_justification='center'),
         pg.Column([[pg.Text("Description", auto_size_text=True)], [pg.Input(pad=(1, 0), key='-DESCRIPT-', size=(60, 1))]], element_justification='center'),
         pg.Column([[pg.Button("Enter Manual Entry", key='-MAN_ENTRY-', pad=(1, 0))]], vertical_alignment='bottom')
-    ]
-
-    # below table layout where controls and info is kept
-    belowTable = [
-        pg.Column([[pg.Button('Modify Entries', key='-MODIFY-'), pg.Button("Delete Entries", key='-DELETE-'), pg.Button('Import CSV File', key="-CSV-"), pg.Button("Graph Data", key='-GRAPH-'), pg.Button("Custom Query", key='-QUERY-'), pg.Button(colour_button_text, key="-COLOUR-")]], element_justification='left'),
-        pg.Column([[pg.Text("Current Table: " + mysql_management.table), pg.Text("Current Database: " + mysql_management.db.database)]], element_justification='right', expand_x=True),
     ]
 
     # create the entire gui layout
@@ -387,6 +388,16 @@ def main() -> None:
             except Exception as e:
                 pg.popup_ok("Please make sure you have selected an entry:", e, title="An Error Occured")
 
+        # if manual entry autofill was requested
+        if '-AUTOFILL-' in event:
+            try:
+                window['-ACC_TYPE-'](selectData[0][1])
+                window['-ACC_NUM-'](selectData[0][2])
+                window['-TRANS_DATE-'](selectData[0][3])
+                window['-AMOUNT-'](selectData[0][4])
+                window['-DESCRIPT-'](selectData[0][5])
+            except Exception as e:
+                pg.popup_ok("Please make sure you have selected a data reference from the table to autofill from", e, title="An Error Occured")
         # if a manual entry is entered into the system
         if '-MAN_ENTRY-' in event:
             try:
@@ -423,11 +434,14 @@ def main() -> None:
             window.close()
             window = createMainWindow(colour_theme)
 
+        # if a graph was requested
         if '-GRAPH-' in event:
             if colour_theme == 'DarkGrey13':
                 graph.showGraph(displayData, 'dark_background')
             else:
                 graph.showGraph(displayData, 'classic')
+
+
     # At the end of the program, close it
     window.close()
 
