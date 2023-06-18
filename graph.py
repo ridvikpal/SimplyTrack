@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import itertools
-import numpy as np
 
 def on_pick(event):
     annotation_visibility = dataPointAnnotation.get_visible()
