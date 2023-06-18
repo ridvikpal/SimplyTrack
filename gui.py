@@ -425,9 +425,9 @@ def main() -> None:
 
         if '-GRAPH-' in event:
             if colour_theme == 'DarkGrey13':
-                graph.showGraph(displayData, False)
+                graph.showGraph(displayData, 'dark_background')
             else:
-                graph.showGraph(displayData, True)
+                graph.showGraph(displayData, 'classic')
     # At the end of the program, close it
     window.close()
 
