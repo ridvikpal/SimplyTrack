@@ -1,6 +1,7 @@
 ''' MODULE IMPORTS '''
 import mysql.connector
 import yaml
+import encrypt
 
 ''' FUNCTION DEFINITIONS '''
 # inserts multiple bank entries (transactions) into the SQL database
@@ -72,12 +73,15 @@ def read_one_block_of_yaml_data(file) -> dict:
 
 # function to setup the database and connect to mySQL
 def setupSQL(data: dict) -> None:
+    # first get the encrypted password from the binary file and decrypt it
+    password = encrypt.decryptEncryptedPassword()
+
     # create a global database object
     global db
     db = mysql.connector.connect(
         host=data['Host'],
         user=data['Username'],
-        passwd=data['Password']
+        passwd=password
         # database=data['Database']
     )
 

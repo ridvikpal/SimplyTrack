@@ -248,7 +248,6 @@ def databaseInfoGUI() -> dict:
             if username and password and host and database and table:
                 data = {
                     'Username' : username,
-                    'Password' : password,
                     'Host' : host,
                     'Database' : database,
                     'Table' : table
@@ -257,7 +256,7 @@ def databaseInfoGUI() -> dict:
             else:
                 pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured")
     dbWindow.close()
-    return data, newDB, newTB # return the data
+    return data, newDB, newTB, password # return the data
 
 # new yaml file setup and start the program
 def newDatabaseConnection() -> None:
@@ -267,7 +266,12 @@ def newDatabaseConnection() -> None:
         serverConfiguration = information[0]
         newDB = information[1]
         newTB = information[2]
+        password = information[3]
         mysql_management.write_yaml_to_file(serverConfiguration, 'server_configuration')
+
+        # create the new encrypted password
+        mysql_management.encrypt.generateKey()
+        mysql_management.encrypt.generateEncryptedPassword(password)
 
         # attempt to connect to the database
         try:
