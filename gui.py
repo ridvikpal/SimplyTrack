@@ -216,7 +216,7 @@ def databaseInfoGUI() -> dict:
     dbLayout = []
 
     dbLayout.append([pg.Column([
-        [pg.Column([[pg.Text("Please enter the database information. "
+        [pg.Column([[pg.Text("Please enter the database configuration information. "
                  "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
         [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
         pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])]
@@ -307,6 +307,9 @@ selectData = list()
 def main() -> None:
     # set the pysimplegui initial theme
     colour_theme = 'DarkGrey13'
+
+    # set the initial font size
+    pg.set_options(font=("Arial", 11))
 
     # setup the server with the config file
     configFile = Path("server_configuration.yaml")
@@ -419,7 +422,10 @@ def main() -> None:
 
         # if modify data is requested
         if '-MODIFY-' in event:
-            modifyGUI(window)
+            if selectData:
+                modifyGUI(window)
+            else:
+                pg.popup_ok("Please make sure you have selected entries", title="An Error Occured")
 
         # if a custom query is requested
         if '-QUERY-' in event:

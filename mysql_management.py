@@ -26,10 +26,7 @@ def getDataFromSQL(lastYear: bool = False) -> list():
         # this query only retrieves the last year's entries, but is not really used, for a future feature
         cursor.execute("select * from " + table + " where transaction_date between date_sub(now(), interval 1 year) and now();")
 
-    sqlData = list()
-    for x in cursor:
-        sqlData.append(x)
-    return sqlData
+    return cursor.fetchall()
 
 # deletes an entry from the sql database
 def deleteDataInSQL(transactionIDList: list) -> None:
