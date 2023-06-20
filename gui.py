@@ -7,7 +7,7 @@ import datetime
 import graph
 
 ''' FUNCTION DEFINITIONS '''
-# update the table data
+# update the table database
 def updateTableData() -> None:
     data = mysql_management.getDataFromSQL()
     displayData.clear()
@@ -61,7 +61,7 @@ def modifyGUI(mainWindow: pg.Window) -> None:
     ])
 
     # create the actual window
-    modifyWindow = pg.Window("Modify Entries", modifyLayout, resizable=False)
+    modifyWindow = pg.Window("Modify Entries", modifyLayout, resizable=False, icon="SimplyTrack_Icon.ico")
 
     # main loop for the modify window
     while True:
@@ -105,7 +105,7 @@ def modifyGUI(mainWindow: pg.Window) -> None:
                     updateTableGUI(mainWindow)
                 break
             except Exception as e:
-                pg.popup_ok("Please ensure the data types are correct for each field:", e, title="An Error Occured")
+                pg.popup_ok("Please ensure the data types are correct for each field:", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
     modifyWindow.close()
 
 # function to open the custom query GUI
@@ -122,7 +122,7 @@ def customQueryGUI() -> None:
     ]
 
     # create the query Window
-    queryWindow = pg.Window("Custom Query", queryLayout, resizable=False)
+    queryWindow = pg.Window("Custom Query", queryLayout, resizable=False, icon="SimplyTrack_Icon.ico")
 
     # main event loop for query window
     while True:
@@ -142,7 +142,7 @@ def customQueryGUI() -> None:
                     textOutput += '\n'
                 queryWindow['-OUTPUT-'].update(textOutput)
             except Exception as e:
-                pg.popup_ok("Please ensure the query is correct:", e, title="An Error Occured")
+                pg.popup_ok("Please ensure the query is correct:", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
     queryWindow.close()
 
 # function to create the main window (to enable theme switching)
@@ -202,7 +202,7 @@ def createMainWindow(colour_theme: pg.theme) -> pg.Window:
         [manualEntry]
     ]
 
-    return pg.Window("SimplyTrack", layout, resizable=False)
+    return pg.Window("SimplyTrack", layout, resizable=False, icon="SimplyTrack_Icon.ico")
 
 # function to create the startup dialog box gui that allows the user to create a yaml SQL configuration file
 def databaseInfoGUI() -> dict:
@@ -217,7 +217,7 @@ def databaseInfoGUI() -> dict:
 
     dbLayout.append([pg.Column([
         [pg.Column([[pg.Text("Please enter the database configuration information. "
-                 "This will be stored in a server_configuration.yaml file to store this for later", size=(45,3))]])],
+                 "This will be stored and encrypted for automatic sign in later on.", size=(45,3))]])],
         [pg.Column([[pg.Text("Username")], [pg.Text("Password")], [pg.Text("Hostname")], [pg.Text("Database")], [pg.Text("Table")]]),
         pg.Column([[pg.Input(key="-USER-")], [pg.Input(key="-PASSWD-", password_char='*')], [pg.Input(key="-HOST-")], [pg.Input(key="-DB-")], [pg.Input(key="-TB-")]])]
     ])])
@@ -227,7 +227,7 @@ def databaseInfoGUI() -> dict:
         pg.Column([[pg.Button("Create YAML File", key="-CREATE-")]], element_justification='right')
     ])
 
-    dbWindow = pg.Window("Enter Database Information", dbLayout, resizable=False)
+    dbWindow = pg.Window("Enter Database Information", dbLayout, resizable=False, icon="SimplyTrack_Icon.ico")
 
     # main event loop for query window
     while True:
@@ -255,7 +255,7 @@ def databaseInfoGUI() -> dict:
                 }
                 break
             else:
-                pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured")
+                pg.popup_ok("Please ensure all fields are filled:", title="An Error Occured", icon="SimplyTrack_Icon.ico")
     dbWindow.close()
     return data, newDB, newTB, password # return the data
 
@@ -291,7 +291,7 @@ def newDatabaseConnection() -> None:
 
             return # after succesful connection, exit function
         except Exception as e:
-            pg.popup_ok("The data entered was incorrect, please provide the correct data", e, title="Incorrect Data")
+            pg.popup_ok("The data entered was incorrect, please provide the correct data", e, title="Incorrect Data", icon="SimplyTrack_Icon.ico")
 
             # remove the incorrect server configuration file and then restart the loop
             serverConfigurationPath = Path("server_configuration.yaml")
@@ -325,8 +325,8 @@ def main() -> None:
             mysql_management.setupTable(serverConfiguration['Table'])
         except Exception as e:
             # inform user the server configuration file is corrupt
-            pg.popup_ok("There is an error in the data in the server_configuration.yaml file:", e,
-                        "You will be prompted to enter the correct database information to recreate the file", title="Incorrect YAML File")
+            pg.popup_ok("There is an error in the data in the configuration files:", e,
+                        "You will be prompted to reenter the correct database information to recreate these files", title="Incorrect Configuration Files", icon="SimplyTrack_Icon.ico")
             # setup a new, correct server configuration file
             configFile.unlink() # remove the existing server_configuration file
             newDatabaseConnection()
@@ -378,7 +378,7 @@ def main() -> None:
                         updateTableGUI(window)
             # if there was some error, let the user know
             except Exception as e:
-                pg.popup_ok("Please check the file path and/or csv file:", e, title="An Error Occured")
+                pg.popup_ok("Please check the file path and/or csv file:", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
 
         # if a deletion was requested, delete the selected rows
         if '-DELETE-' in event:
@@ -389,7 +389,7 @@ def main() -> None:
                 mysql_management.deleteDataInSQL(deleteList)
                 updateTableGUI(window)
             except Exception as e:
-                pg.popup_ok("Please make sure you have selected an entry:", e, title="An Error Occured")
+                pg.popup_ok("Please make sure you have selected an entry:", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
 
         # if manual entry autofill was requested
         if '-AUTOFILL-' in event:
@@ -400,7 +400,7 @@ def main() -> None:
                 window['-AMOUNT-'](selectData[0][4])
                 window['-DESCRIPT-'](selectData[0][5])
             except Exception as e:
-                pg.popup_ok("Please make sure you have selected a data reference from the table to autofill from", e, title="An Error Occured")
+                pg.popup_ok("Please make sure you have selected a data reference from the table to autofill from", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
         # if a manual entry is entered into the system
         if '-MAN_ENTRY-' in event:
             try:
@@ -416,16 +416,16 @@ def main() -> None:
                     window['-AMOUNT-']('')
                     window['-DESCRIPT-']('')
                 else:
-                    pg.popup_ok("Please make sure all fields are filled", title="An Error Occured")
+                    pg.popup_ok("Please make sure all fields are filled", title="An Error Occured", icon="SimplyTrack_Icon.ico")
             except Exception as e:
-                pg.popup_ok("Please make sure all fields are filled with the correct data type: ", e, title="An Error Occured")
+                pg.popup_ok("Please make sure all fields are filled with the correct data type: ", e, title="An Error Occured", icon="SimplyTrack_Icon.ico")
 
         # if modify data is requested
         if '-MODIFY-' in event:
             if selectData:
                 modifyGUI(window)
             else:
-                pg.popup_ok("Please make sure you have selected entries", title="An Error Occured")
+                pg.popup_ok("Please make sure you have selected entries", title="An Error Occured", icon="SimplyTrack_Icon.ico")
 
         # if a custom query is requested
         if '-QUERY-' in event:
