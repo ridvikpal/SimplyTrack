@@ -31,8 +31,44 @@ As you can see, alongside the MySQL server information you have the opportunity 
 ```
 
 ## Features
-SimplyTrack is a simple financial tracker, but it has lots of features.
+SimplyTrack is a simple financial tracker, but it has quite a few features. All of these features were ones that I would want in a financial tracker to replace my Excel file.
+
+### AES Password Encryption
+As mentioned in the setup section, the password you supply for your MySQL server is always encrypted in with 256 Bit AES Encryption using the `pycryptodome` library. The key is randomly generated using a random string (that includes characters, digits, and special characters) and a 128 bit salt.
+
+### Basic Usage
+Upon logging into the MySQL database, you will be greeted with the bank transactions you have entered into the database. Of course, you can do things like:
+* Create New Entries
+* Select Entries
+* Modify Old Entries
+* Delete Entries
+* Bulk Edit Entries
+
+![Alt text](<modify entries.png>)
+
+### CSV Data Import
+SimplyTrack has the ability to import data from CSV files. For this feature, I could have used the pandas csv reader, and I will change this in the future to use the pandas one, but I wanted the csv reader to be "smart". At the time of development, I wanted the csvreader to auto determine which rows contained which data by checking the headers. If the same data was split between multiple columns, it should be able to take that data and concatenate it. I didn't investigate how to do it with pandas at the time, but now I see it is possible and in the future I will change it. However, it is still fully functional and the CSV Import will import all the required data if it finds it in the CSV file:
+
+![Alt text](<import csv dialog.png>)
+
+### Graph All Data
+
+This is the feature I find the most useful. One of the most common things I do in my Excel financial tracker is track my account balance based on the transactions I do. This feature has been implemented with matplotlib. Additionally, I added a smart annotation that allows you to click on data points and see how a transaction either increased or decresed your balance. Very useful for checking your spending and earning habits and trends across *all accounts*:
+
+![Alt text](<graph window.png>)
+
+### Custom Query Mode
+
+SQL Queries have so much potential, and it is impossible to implement all of them into a GUI format. Therefore, for advanced users, I have added a custom query mode, so you can input direct SQL queries and get an output. It is basically another SQL input terminal:
+
+![Alt text](<custom query window.png>)
 
 ### Light/Dark Mode
+Of course, with modern UI applications having both light mode and dark mode, SimplyTrack just had to have it! By default it starts off with dark mode, but you can click the light mode button to theme the entire UI in light mode if you like:
+
+![Alt text](<light mode.png>)
 
 ## Features to Implement in the Future
+* Sorting Features on the Table (sort by different column value, like in Excel tables)
+* Date filters to filter transactions across different dates
+* Multithreading with thread library to yeild some performance gains (perfomance is already decent, but could be better)
