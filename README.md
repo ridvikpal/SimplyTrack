@@ -73,3 +73,8 @@ Of course, with modern UI applications having both light mode and dark mode, Sim
 * Sorting Features on the Table (sort by different column value, like in Excel tables)
 * Date filters to filter transactions across different dates
 * Multithreading with thread library to yeild some performance gains (perfomance is already decent, but could be better)
+
+## Icon Credits
+The icon used in the logo and application comes from www.flaticon.com:
+
+<a href="https://www.flaticon.com/free-icons/transaction" title="transaction icons">Transaction icons created by Aficons studio - Flaticon</a>
