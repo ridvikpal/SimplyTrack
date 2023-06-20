@@ -27,20 +27,6 @@ As you can see, alongside the MySQL server information you have the opportunity 
 | amount           | double     | YES  |      | NULL    |                |
 | description      | longtext   | YES  |      | NULL    |                |
 
-```
-+------------------+------------+------+-----+---------+----------------+
-| Field            | Type       | Null | Key | Default | Extra          |
-+------------------+------------+------+-----+---------+----------------+
-| id               | mediumint  | NO   | PRI | NULL    | auto_increment |
-| account_type     | mediumtext | YES  |     | NULL    |                |
-| account_number   | bigint     | YES  |     | NULL    |                |
-| transaction_date | date       | YES  |     | NULL    |                |
-| amount           | double     | YES  |     | NULL    |                |
-| description      | longtext   | YES  |     | NULL    |                |
-+------------------+------------+------+-----+---------+----------------+
-6 rows in set (0.0023 sec)
-```
-
 ## Features
 SimplyTrack is a simple financial tracker, but it has quite a few features. All of these features were ones that I would want in a financial tracker to replace my Excel file.
 
