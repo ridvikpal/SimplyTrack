@@ -1,8 +1,24 @@
 # SimplyTrack
 ![Alt text](<SimplyTrack Logo.png>)
-A simple financial tracker used to manage bank transactions stored in a MySQL server. I use this personally to securely combine the transactions I have across all my bank accounts. Then, using the graph features, I can track spending and income trends across multiple accounts. For example: (these are just sample bank transactions, obviously!)
+
+## Introduction
+A simple financial tracker used to manage bank transactions stored in a MySQL server. I use this personally to securely combine the transactions I have across all my bank accounts and track them. Then, using the graph features, I can track spending and income trends across multiple accounts. For example: (these are sample bank transactions, not my personal ones, obviously!)
 
 ![Alt text](image.png)
+
+## Functional Goals
+Before creating SimplyTrack, I used to track all my bank transactions with an excel spreadsheet. The cons with that method were that I would have to store that excel sheet in the cloud, in case something ever happened to that local machine. I find this to be a more secure "remote" alternative (it is stored in an encrypted SQL server with it's own encrypted key and password). I have a dedicated home server machine that I can use for the SQL server with a static IP address and use that as a "cloud" to store all of my transactions that I am tracking. Because storage is cheap nowadays, it offers me more peace of mind than storing my data in OneDrive for example. Additionally, I wanted to learn and improve my skills with Python, MySQL and Matplotlib, which are used in developing this application.
+
+## External Library Requirements
+The following external libraries are used in this project:
+
+<div align="center">
+
+| Library          | Used For                                                                          |
+| ---------------- | --------------------------------------------------------------------------------- |
+| csv              | Used for importing data from a compatible csv file.                               |
+
+</div>
 
 ## Initial Setup
 The program requres three files in order to work properly:
