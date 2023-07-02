@@ -14,7 +14,7 @@ A simple financial tracker used to manage bank transactions stored in a MySQL se
 Before creating SimplyTrack, I used to track all my bank transactions with an excel spreadsheet. The cons with that method were that I would have to store that excel sheet in the cloud, in case something ever happened to that local machine. I find this to be a more secure "remote" alternative (it is stored in an encrypted SQL server with it's own encrypted key and password). I have a dedicated home server machine that I can use for the SQL server with a static IP address and use that as a "cloud" to store all of my transactions that I am tracking. Because storage is cheap nowadays, it offers me more peace of mind than storing my data in OneDrive for example. Additionally, I wanted to learn and improve my skills with Python, MySQL and `matplotlib`, which are used in developing this application.
 
 ## External Libraries
-The following external python libraries are used in this project:
+This python application was originally created using python 3.11.3. The following external python libraries are used in this project:
 
 <div align="center">
 
