@@ -27,6 +27,7 @@ The following external python libraries are used in this project:
 | `mysql.connector` | Connect, query, and modify the MySQL Database.                                               |
 | `yaml`            | Manage the yaml configuration file.                                                          |
 | `pathlib`         | Standardize file paths for different operating systems.                                      |
+| `datetime`        | Create and manage dates and times                                                            |
 | `Crypto`          | 256-bit AES symmetric encryption and decryption of MySQL database.                           |
 | `random`          | Generate a random string to use for salt during encryption.                                  |
 | `string`          | Get standard characters used in strings for random salt creation during encryption.          |
