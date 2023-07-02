@@ -6,17 +6,42 @@ A simple financial tracker used to manage bank transactions stored in a MySQL se
 
 ![Alt text](main_window.png)
 
-## Functional Goals
+## Goals
 Before creating SimplyTrack, I used to track all my bank transactions with an excel spreadsheet. The cons with that method were that I would have to store that excel sheet in the cloud, in case something ever happened to that local machine. I find this to be a more secure "remote" alternative (it is stored in an encrypted SQL server with it's own encrypted key and password). I have a dedicated home server machine that I can use for the SQL server with a static IP address and use that as a "cloud" to store all of my transactions that I am tracking. Because storage is cheap nowadays, it offers me more peace of mind than storing my data in OneDrive for example. Additionally, I wanted to learn and improve my skills with Python, MySQL and Matplotlib, which are used in developing this application.
 
 ## External Library Requirements
-The following external libraries are used in this project:
+The following external python libraries are used in this project:
 
 <div align="center">
 
-| Library          | Used For                                                                          |
-| ---------------- | --------------------------------------------------------------------------------- |
-| csv              | Used for importing data from a compatible csv file.                               |
+| Library           | Used For                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| `csv`             | Importing data from a compatible csv file.                                                  |
+| `matplotlib`      | Graphing the bank transaction data to visualize the trends                                  |
+| `itertools`       | Accumulate the amounts in all bank transactions for the graph                               |
+| `PySimpleGUI`     | Create the entire user interface.                                                           |
+| `mysql.connector` | Connect, query, and modify the MySQL Database                                               |
+| `yaml`            | Manage the yaml configuration file                                                          |
+| `pathlib`         | Standarize file paths for different operating systems                                       |
+| `Crypto`          | 256-bit AES symmetric encryption and decryption of MySQL database                           |
+| `random`          | Generate a random string to use for salt during encryption                                  |
+| `string`          | Get standard characters used in strings for random salt creation during encryption          |
+| `Decimal`         | Provide greater precision than `float` for bank transaction amounts when importing from csv |
+
+</div>
+
+## Code Files
+The program source code has been broken down into 5 files:
+
+<div align="center">
+
+| File                  | Contains Code For                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| `gui.py`              | For the user interface. Main file to run, starts the program                                    |
+| `graph.py`            | Graphing the accumulated amounts in all bank accounts                                           |
+| `encrypt.py`          | Encrypting and Decrypting the password for MySQL with AES 256-bit encryption                    |
+| `extract_csv.py`      | Extracting the bank transaction data from a CSV file with dynamic row selection                 |
+| `mysql_management.py` | Managing bank transaction records, and setting up YAML configuraiton file in the MySQL database |
 
 </div>
 
@@ -36,14 +61,14 @@ As you can see, alongside the MySQL server information you have the opportunity 
 
 <div align="center">
 
-| Field            | Type       | Null | Key  | Default | Extra          |
-| ---------------- | ---------- | ---- | ---- | ------- | -------------- |
-| id               | mediumint  | NO   | PRI  | NULL    | auto_increment |
-| account_type     | mediumtext | YES  |      | NULL    |                |
-| account_number   | bigint     | YES  |      | NULL    |                |
-| transaction_date | date       | YES  |      | NULL    |                |
-| amount           | double     | YES  |      | NULL    |                |
-| description      | longtext   | YES  |      | NULL    |                |
+| Field              | Type       | Null | Key  | Default | Extra          |
+| ----------------   | ---------- | ---- | ---- | ------- | -------------- |
+| `id`               | mediumint  | NO   | PRI  | NULL    | auto_increment |
+| `account_type`     | mediumtext | YES  |      | NULL    |                |
+| `account_number`   | bigint     | YES  |      | NULL    |                |
+| `transaction_date` | date       | YES  |      | NULL    |                |
+| `amount`           | double     | YES  |      | NULL    |                |
+| `description`      | longtext   | YES  |      | NULL    |                |
 
 </div>
 
