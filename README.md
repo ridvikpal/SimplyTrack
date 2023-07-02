@@ -6,7 +6,7 @@ The logo contains an icon from www.flaticon.com:
 <a href="https://www.flaticon.com/free-icons/transaction" title="transaction icons">Transaction icons created by Aficons studio - Flaticon</a>
 
 ## Introduction
-A simple financial tracker used to manage bank transactions stored in a MySQL server. I use this personally to securely combine the transactions I have across all my bank accounts and track them. Then, using the graph features, I can track spending and income trends across multiple accounts. For example: (these are sample bank transactions, not my personal ones, obviously!)
+A simple financial tracker that stores manually entered bank transaction data in a MySQL server and is managed via a clean GUI. I use this personally to securely combine the transactions I have across all my bank accounts and track them. Then, using the graph features, I can track spending and income trends across multiple accounts. For example: (these are sample bank transactions, not my personal ones, obviously!)
 
 ![Alt text](main_window.png)
 
