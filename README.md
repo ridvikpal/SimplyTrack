@@ -95,7 +95,7 @@ Upon logging into the MySQL database, you will be greeted with the bank transact
 ### CSV Data Import
 SimplyTrack has the ability to import data from CSV files. For this feature, I could have used the pandas csv reader, and I will change this in the future to use the pandas one, but I wanted the csv reader to be "smart". At the time of development, I wanted the csv reader to auto determine which rows contained which data by checking the headers. If the same data was split between multiple columns, it should be able to take that data and concatenate it. I didn't investigate how to do it with pandas at the time, but now I see it is possible and in the future I will change it. However, it is still fully functional and the CSV Import will import all the required data if it finds it in the CSV file:
 
-![Alt text](import_csv_dialog.png)
+![Alt text](csv_import.png)
 
 ### Graph All Data
 
