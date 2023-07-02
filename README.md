@@ -1,6 +1,10 @@
 # SimplyTrack
 ![Alt text](<SimplyTrack Logo.png>)
 
+The logo contains an icon from www.flaticon.com:
+
+<a href="https://www.flaticon.com/free-icons/transaction" title="transaction icons">Transaction icons created by Aficons studio - Flaticon</a>
+
 ## Introduction
 A simple financial tracker used to manage bank transactions stored in a MySQL server. I use this personally to securely combine the transactions I have across all my bank accounts and track them. Then, using the graph features, I can track spending and income trends across multiple accounts. For example: (these are sample bank transactions, not my personal ones, obviously!)
 
@@ -116,8 +120,3 @@ Of course, with modern UI applications having both light mode and dark mode, Sim
 * Multithreading with threading library to yield some performance gains (performance is already decent, but could be better).
 * Shift from PySimpleGUI to PyQt5 (or PyQt6) as that library has native support for SQL table models.
 * Use pandas for csv import.
-
-## Icon Credits
-The icon used in the logo and application comes from www.flaticon.com:
-
-<a href="https://www.flaticon.com/free-icons/transaction" title="transaction icons">Transaction icons created by Aficons studio - Flaticon</a>
